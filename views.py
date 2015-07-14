@@ -41,6 +41,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    flash("%s, you have been logged out" % g.user.username)
     logout_user()
     return redirect(url_for('index'))
 
@@ -60,11 +61,12 @@ def post():
     create_time = datetime.datetime.utcnow()
     modified_time = create_time
     newArticle = Article(url_title = title, title = title, content_markdown = content_markdown,
-                         allow_comment = allow_comment, create_time = create_time, modified_time = modified_time,
-                         user_id = user.id, public = public)
+                         allow_comment = allow_comment, create_time = create_time,
+                         modified_time = modified_time, user_id = user.id,
+                         public = public)
     db.session.add(newArticle)
     db.session.commit()
-    return redirect(url_for("hello"))
+    return redirect(url_for(request.args.next) or url_for("hello"))
 
 
 @app.route('/hello', methods=['GET','POST'])

@@ -11,8 +11,20 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
-    password = db.Column(db.String(120))
-    # posts = db.relationship('Post', backref='author', lazy='dynamic')
+    # password = db.Column(db.String(120))
+    password_hash = db.Column(db.String(128))
+
+    @property
+    def password(self):
+        raise AttributeError("password is not a readable attribute")
+
+    @password.setter
+    def password(self, pwd):
+        self.password_hash = generate_password_hash(pwd)
+
+    def verify_password(self, pwd):
+        return check_password_hash(self.password_hash, pwd)
+
 
     def is_authenticated(self):
         return True
@@ -82,6 +94,14 @@ class Tag(db.Model):
         return '<Tag %u>' % (self.name)
 
 
+class Role(db.Model):
+    __tablename__ = 'role'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    default = db.Column(db.Boolean, default=False, unique=True)
+
+    def __repr__(self):
+        return '<Role %r>' % self.name
 
 
 class Relationship(db.Model):

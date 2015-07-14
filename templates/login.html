@@ -1,28 +1,40 @@
 <!-- extend from base layout -->
 {% extends "base.html" %}
-
+{% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-  <h2>Sign In</h2>
+<h2>Sign In</h2>
 
-  {% for message in form.username.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
+{% for message in form.username.errors %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+{% endfor %}
 
-  {% for message in form.password.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
+{% for message in form.password.errors %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+{% endfor %}
 
-  <form action="{{ url_for('login') }}" method="post" name="login">
-    {{ form.hidden_tag() }}
+<div class="col-md-4">
+    {{ wtf.quick_form(form) }}
+</div>
 
-    {{ form.username.label }}
-    {{ form.username }}
 
-    {{ form.password.label }}
-    {{ form.password }}
-    {{ form.remember_me }}
-    {{ form.remember_me.label }}
-    {{ form.submit }}
-  </form>
+<!--<form action="{{ url_for('login') }}" method="post" name="login">-->
+<!--{{ form.hidden_tag() }}-->
+
+<!--{{ form.username.label }}-->
+<!--{{ form.username }}-->
+
+<!--{{ form.password.label }}-->
+<!--{{ form.password }}-->
+<!--{{ form.remember_me }}-->
+<!--{{ form.remember_me.label }}-->
+<!--{{ form.submit }}-->
+<!--</form>-->
+
 
 {% endblock %}
