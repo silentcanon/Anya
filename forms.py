@@ -9,7 +9,7 @@ from .models import User
 
 
 class LoginForm(Form):
-    username = StringField("Username",validators=[DataRequired()])
+    username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in', default=False)
     submit = SubmitField("Login")
@@ -31,7 +31,7 @@ class LoginForm(Form):
 
 
 class PostForm(Form):
-    title = StringField('Title',validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired()])
     content_markdown = PageDownField("Write something here", validators=[DataRequired()])
     allow_comment = BooleanField('Allow Comment?', default=True)
     public = BooleanField('Public?', default=True)

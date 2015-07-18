@@ -7,6 +7,7 @@ from .models import User, Article
 import datetime
 
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -53,20 +54,36 @@ def post():
     print user.id
     form = PostForm()
     if not form.validate_on_submit():
-        return render_template('post.html',title='Add a post', form = form)
+        return render_template('post.html', title='Add a post', form=form)
     title = form.title.data
     content_markdown = form.content_markdown.data
     allow_comment = form.allow_comment.data
     public = form.public.data
     create_time = datetime.datetime.utcnow()
     modified_time = create_time
-    newArticle = Article(url_title = title, title = title, content_markdown = content_markdown,
-                         allow_comment = allow_comment, create_time = create_time,
-                         modified_time = modified_time, user_id = user.id,
-                         public = public)
+    newArticle = Article(url_title=title, title=title, content_markdown=content_markdown,
+                         allow_comment=allow_comment, create_time=create_time,
+                         modified_time=modified_time, user_id=user.id,
+                         public=public)
     db.session.add(newArticle)
     db.session.commit()
     return redirect(url_for(request.args.next) or url_for("hello"))
+
+@app.route("/blog/archives/<url_title>")
+def blog(url_title):
+    article = Article.query.filter_by(url_title=url_title).first()
+    if article is None:
+        return redirect(url_for("index"))
+    return render_template("blog.html", article=article)
+
+
+@app.route("/blog/", defaults={'page_id': 1})
+@app.route("/blog/page/", defaults={'page_id': 1})
+@app.route("/blog/page/<int:page_id>")
+def blog_overview(page_id):
+    pagination = Article.query.paginate(page_id, per_page=2, error_out=False)
+    articles = pagination.items
+    return render_template("blog_overview.html", articles=articles, pagination=pagination)
 
 
 @app.route('/hello', methods=['GET','POST'])

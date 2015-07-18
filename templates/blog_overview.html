@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block content %}
+{% for article in articles %}
+    {% include "_article_briefview.html" %}
+{% endfor %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination,"blog_overview") }}
+</div>
+{% endblock %}

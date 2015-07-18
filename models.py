@@ -11,8 +11,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
-    # password = db.Column(db.String(120))
     password_hash = db.Column(db.String(128))
+    role = db.Column(db.Integer, db.ForeignKey('Role.id'))
 
     @property
     def password(self):
@@ -25,6 +25,15 @@ class User(UserMixin, db.Model):
     def verify_password(self, pwd):
         return check_password_hash(self.password_hash, pwd)
 
+
+    def can(self, permissions):
+        if self.role is None:
+            return False
+        myRole = Role.query.get(self.role)
+        return myRole is not None and (myRole.permissions & permissions) == permissions
+
+    def is_admin(self):
+        return self.can(Permission.ROOT)
 
     def is_authenticated(self):
         return True
@@ -46,13 +55,13 @@ class User(UserMixin, db.Model):
         return '<User %r>' % (self.username)
 
 class Article(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    url_title = db.Column(db.Unicode(300), index = True)
+    id = db.Column(db.Integer, primary_key=True)
+    url_title = db.Column(db.Unicode(300), index=True)
     title = db.Column(db.Unicode(300))
     content_html = db.Column(db.UnicodeText)
     content_markdown = db.Column(db.UnicodeText)
     brief_content = db.Column(db.UnicodeText)
-    create_time = db.Column(db.DateTime, index = True)
+    create_time = db.Column(db.DateTime, index=True)
     modified_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     allow_comment = db.Column(db.Boolean)
@@ -60,13 +69,12 @@ class Article(db.Model):
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
-        allow_tags = ['a','abbr','acronym','b','blockquote','code','em',
-                      'i','li','ol','pre','strong','ul','h1','h2','h3','p']
+        allow_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
+                      'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'p']
         target.content_html = bleach.linkify(bleach.clean(
-            markdown(value,output_form='html'),
-            tags=allow_tags,strip=True
+            markdown(value, output_form='html'),
+            tags=allow_tags, strip=True
         ))
-
 
     def __repr__(self):
         return '<Article %r>' % (self.title)
@@ -88,10 +96,10 @@ class Comment(db.Model):
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(10), index = True)
+    name = db.Column(db.Unicode(10), index=True)
 
     def __repr__(self):
-        return '<Tag %u>' % (self.name)
+        return '<Tag %u>' % self.name
 
 
 class Role(db.Model):
@@ -99,14 +107,38 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, unique=True)
+    permissions = db.Column(db.Integer)
+
+    @staticmethod
+    def insertRoles():
+        roles = {
+            'User': (Permission.COMMENT, True),
+            'Friend': (Permission.COMMENT | Permission.SHOW_HIDDEN, False),
+            'ROOT': (0xff, False)
+        }
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
+        db.session.commit()
+
 
     def __repr__(self):
         return '<Role %r>' % self.name
 
+class Permission:
+    COMMENT = 0x01
+    SHOW_HIDDEN = 0x02
+    WRITE = 0x04
+    ROOT = 0x80
+
 
 class Relationship(db.Model):
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'), primary_key=True, index=True)
-    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), primary_key=True, index = True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), primary_key=True, index=True)
 
     def __repr__(self):
         return '<article %d -- tag %d>' % (self.article_id, self.tag_id)

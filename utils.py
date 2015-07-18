@@ -6,3 +6,6 @@ def generateArticleId(timestamp, urlTitle):
 
 def generateCommentId(timestamp, username, articleId):
     pass
+
+def generateTitleUrl(title):
+    pass
