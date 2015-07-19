@@ -1,10 +1,20 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
 {% block content %}
-{% for article in articles %}
-    {% include "_article_briefview.html" %}
-{% endfor %}
-<div class="pagination">
+<div class="container">
+<div class="row">
+    <div class="col-sm-8">
+    {% for article in articles %}
+        {% include "_article_briefview.html" %}
+    {% endfor %}
+
     {{ macros.pagination_widget(pagination,"blog_overview") }}
+    </div>
+
+    <div class="col-sm-3 col-sm-offset-1">
+        <p>Another row
+        </p>
+    </div>
+</div>
 </div>
 {% endblock %}

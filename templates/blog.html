@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{article.title}}</h1>
-<p>{{article.content_html | safe }}</p>
+<div class="container">
+    <h1>{{article.title}}</h1>
+    <p>{{article.content_html | safe }}</p>
+</div>
+
 {% endblock %}

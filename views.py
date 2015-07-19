@@ -14,12 +14,12 @@ def index():
     user = g.user
     posts = [
         {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
+            'author': {'username': 'Canon'},
+            'body': 'Beautiful day!'
         },
         {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
+            'author': {'username': 'Kanon'},
+            'body': 'I am Canon!'
         }
     ]
     return render_template('index.html',
@@ -81,7 +81,7 @@ def blog(url_title):
 @app.route("/blog/page/", defaults={'page_id': 1})
 @app.route("/blog/page/<int:page_id>")
 def blog_overview(page_id):
-    pagination = Article.query.paginate(page_id, per_page=2, error_out=False)
+    pagination = Article.query.order_by(Article.create_time.desc()).paginate(page_id, per_page=2, error_out=False)
     articles = pagination.items
     return render_template("blog_overview.html", articles=articles, pagination=pagination)
 

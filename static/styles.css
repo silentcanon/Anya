@@ -1,0 +1,6 @@
+body { padding-top: 70px; }
+
+a:hover.title, a:focus.title{
+    color: #2A6496;
+    text-decoration: None;
+}
