@@ -3,6 +3,9 @@
 <div class="container">
     <h1>{{article.title}}</h1>
     <p>{{article.content_html | safe }}</p>
+    {% if g.user.is_admin() %}
+    <a href="{{ url_for('index') }}">Edit</a>
+    {% endif %}
 </div>
 
 {% endblock %}

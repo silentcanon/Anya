@@ -1,6 +1,6 @@
 __author__ = 'Canon'
-from app import db
-from flask.ext.login import UserMixin
+from app import db, lm
+from flask.ext.login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from markdown import markdown
 import bleach
@@ -54,6 +54,24 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
+class AnonymousUser(AnonymousUserMixin):
+    def is_active(self):
+        return False
+
+    def is_authenticated(self):
+        return False
+
+    def is_anonymous(self):
+        return True
+
+    def can(self, permission):
+        return False
+
+    def is_admin(self):
+        return False
+
+
+
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url_title = db.Column(db.Unicode(300), index=True)
@@ -63,9 +81,11 @@ class Article(db.Model):
     brief_content = db.Column(db.UnicodeText)
     create_time = db.Column(db.DateTime, index=True)
     modified_time = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     allow_comment = db.Column(db.Boolean)
-    public  = db.Column(db.Boolean)
+    public = db.Column(db.Boolean)
+    removed = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
@@ -145,6 +165,7 @@ class Relationship(db.Model):
 
 
 db.event.listen(Article.content_markdown, 'set', Article.on_change_body)
+lm.anonymous_user = AnonymousUser
 
 
 

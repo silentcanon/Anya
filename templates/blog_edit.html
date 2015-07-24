@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script></script>
+<script>tinymce.init({
+    selector:'textarea',
+    plugins:'advlist autolink link image lists preview code'
+    });
+</script>
+<script src='http://lovasoa.github.io/tidy-html5/tidy.js'></script>
+<script>
+  options = {
+  "indent":"auto",
+  "indent-spaces":2,
+  "wrap":80,
+  "markup":true,
+  "output-xml":false,
+  "numeric-entities":true,
+  "quote-marks":true,
+  "quote-nbsp":false,
+  "show-body-only":true,
+  "quote-ampersand":false,
+  "break-before-br":true,
+  "uppercase-tags":false,
+  "uppercase-attributes":false,
+  "drop-font-tags":true,
+  "tidy-mark":false
+}</script>
+<script>
+    $(document).ready(function () {
+        $('body').attr(onload='prettyPrint()');
+        $('#tabs-content #source').hide();
+
+        $('#tabs a').click(function(e){
+            var currentValue = $(this).attr('href');
+            $('#tabs-content '+currentValue).show().siblings().hide();
+            $(this).parent('li').addClass('active').siblings().removeClass('active');
+            e.preventDefault();
+        });
+
+        $("#tabs a[href='#source']").click(function () {
+            var html = tinymce.activeEditor.getContent({format: 'raw'});
+            var result = tidy_html5(html, options);
+            $("#tabs-content pre xmp").html(result);
+            $("#tabs-content pre").removeClass("prettyprinted");
+            PR.prettyPrint();
+        });
+
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{article.title}}</h1>
+
+    <div class="col-sm-8">
+        <div id="tabs">
+            <ul class="nav nav-tabs">
+                <li class="active" role="presentation"><a href="#view">View</a></li>
+                <li role="presentation"><a href="#source">Source</a></li>
+            </ul>
+        </div>
+        <div id="tabs-content">
+            <div id="view">
+                <textarea>Hello World</textarea>
+            </div>
+            <div id="source">
+                <pre class="prettyprint lang-html"><xmp></xmp></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

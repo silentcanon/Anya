@@ -2,4 +2,14 @@
     <a class="title" href="{{ url_for('blog', url_title=article.url_title) }}"><h3>{{ article.title}}</h3></a>
     <p>{{ article.brief_content}}</p>
     <a href="{{ url_for('blog', url_title='ihihih') }}">READ MORE</a>
+    {% if g.user.is_admin() %}
+    <div>
+        <ul class="nav nav-pills">
+            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a></li>
+            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-trash"></span>&nbsp;Tash</a></li>
+            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;View</a></li>
+            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-stats"></span>&nbsp;Stats</a></li>
+        </ul>
+    </div>
+    {% endif %}
 </div>

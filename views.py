@@ -3,7 +3,8 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
 from .forms import LoginForm, PostForm
-from .models import User, Article
+from .models import User, Article, Permission
+from decorators import admin_required
 import datetime
 
 
@@ -34,7 +35,7 @@ def login():
     form = LoginForm()
     if not form.validate_on_submit():
         ##flash("Username or password invalid", 'Error')
-        return render_template('login.html',title='Login',form = form)
+        return render_template('login.html', title='Login', form=form)
     user = form.user
     login_user(user, remember=form.remember_me.data)
     flash("Login successfully")
@@ -75,6 +76,15 @@ def blog(url_title):
     if article is None:
         return redirect(url_for("index"))
     return render_template("blog.html", article=article)
+
+@app.route("/blog/archives/<url_title>/edit")
+@login_required
+@admin_required
+def blog_edit(url_title):
+    article = Article.query.filter_by(url_title=url_title).first()
+    if article is None:
+        return redirect(url_for("index"))
+    return render_template("blog_edit.html", article=article)
 
 
 @app.route("/blog/", defaults={'page_id': 1})

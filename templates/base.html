@@ -1,6 +1,7 @@
 {% extends "bootstrap/base.html" %}
     {% block head %}
     {{ super() }}
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles.css')}}">
     {% endblock %}
 
@@ -30,7 +31,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if g.user.is_authenticated() %}
-                    <li><a href="{{ url_for('logout') }}">Sign Out</a></li>
+                    <li><a href="{{ url_for('logout') }}">{{g.user.username}}  Sign Out</a></li>
                     {% else %}
                     <li><a href="{{ url_for('login') }}">Sign In</a></li>
                     {% endif %}
