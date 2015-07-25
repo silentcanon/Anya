@@ -9,3 +9,6 @@ def generateCommentId(timestamp, username, articleId):
 
 def generateTitleUrl(title):
     pass
+
+def allowed_file(filename):
+    return True;

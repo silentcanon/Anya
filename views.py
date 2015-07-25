@@ -2,9 +2,10 @@ __author__ = 'Canon'
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from .forms import LoginForm, PostForm
+from .forms import LoginForm, PostForm, EditForm
 from .models import User, Article, Permission
 from decorators import admin_required
+from utils import allowed_file
 import datetime
 
 
@@ -77,14 +78,32 @@ def blog(url_title):
         return redirect(url_for("index"))
     return render_template("blog.html", article=article)
 
-@app.route("/blog/archives/<url_title>/edit")
+@app.route("/blog/archives/<url_title>/edit", methods=['GET','POST'])
 @login_required
 @admin_required
 def blog_edit(url_title):
     article = Article.query.filter_by(url_title=url_title).first()
     if article is None:
         return redirect(url_for("index"))
-    return render_template("blog_edit.html", article=article)
+
+    editForm = EditForm(request.form)
+    editForm.title.data = article.title
+    editForm.content_html.data = article.content_html
+    editForm.public.data = article.public
+    editForm.allow_comment.data = article.allow_comment
+    if request.method == 'POST' and editForm.validate():
+        print(editForm.content_html.data)
+        return redirect(url_for('index'))
+    else:
+        if editForm.errors:
+            print editForm.errors
+    return render_template("blog_edit.html", editForm=editForm)
+
+
+    # article.content_html = editForm.content_html.data
+    # article.title = editForm.title.data
+    # article.modified_time = datetime.datetime.utcnow()
+    # db.session.commit()
 
 
 @app.route("/blog/", defaults={'page_id': 1})
@@ -94,6 +113,38 @@ def blog_overview(page_id):
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(page_id, per_page=2, error_out=False)
     articles = pagination.items
     return render_template("blog_overview.html", articles=articles, pagination=pagination)
+
+@app.route("/api/photo/upload", methods=['GET','POST'])
+def _photo_upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            print(filename)
+            # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return "{success: 0}"
+        return '''
+        <!doctype html>
+        <title>Upload new File</title>
+        <h1>Upload new File</h1>
+        <form action="" method=post enctype=multipart/form-data>
+          <p><input type=file name=file>
+             <input type=submit value=Upload>
+        </form>
+        '''
+
+@app.route("/photo/upload", methods=['GET','POST'])
+def photo_upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            print(filename)
+            # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return "{success: 0}"
+        else:
+            return "{error: 1}"
+    return render_template('photo_upload.html')
 
 
 @app.route('/hello', methods=['GET','POST'])

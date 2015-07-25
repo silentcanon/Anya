@@ -2,36 +2,33 @@
 {% block head %}
 {{ super() }}
 <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script></script>
 <script>tinymce.init({
-    selector:'textarea',
-    plugins:'advlist autolink link image lists preview code'
+    selector:'#view textarea',
+    plugins:'advlist autolink link image lists preview code',
+    image_list: [
+        {title: 'My image 1', value: 'http://www.tinymce.com/my1.gif'},
+        {title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif'}
+    ]
     });
 </script>
-<script src='http://lovasoa.github.io/tidy-html5/tidy.js'></script>
-<script>
-  options = {
-  "indent":"auto",
-  "indent-spaces":2,
-  "wrap":80,
-  "markup":true,
-  "output-xml":false,
-  "numeric-entities":true,
-  "quote-marks":true,
-  "quote-nbsp":false,
-  "show-body-only":true,
-  "quote-ampersand":false,
-  "break-before-br":true,
-  "uppercase-tags":false,
-  "uppercase-attributes":false,
-  "drop-font-tags":true,
-  "tidy-mark":false
-}</script>
+
+
 <script>
     $(document).ready(function () {
-        $('body').attr(onload='prettyPrint()');
         $('#tabs-content #source').hide();
+
+        $("#tabs a[href='#source']").click(function (e) {
+            var html = tinymce.activeEditor.getContent({source_view: true});
+            $("#tabs-content #source textarea").val(html);
+            e.preventDefault();
+        });
+
+        $("#tabs a[href='#view']").click(function (e) {
+            var html = $("#tabs-content #source textarea").val();
+            tinymce.activeEditor.setContent(html);
+            e.preventDefault();
+        });
 
         $('#tabs a').click(function(e){
             var currentValue = $(this).attr('href');
@@ -40,13 +37,17 @@
             e.preventDefault();
         });
 
-        $("#tabs a[href='#source']").click(function () {
-            var html = tinymce.activeEditor.getContent({format: 'raw'});
-            var result = tidy_html5(html, options);
-            $("#tabs-content pre xmp").html(result);
-            $("#tabs-content pre").removeClass("prettyprinted");
-            PR.prettyPrint();
-        });
+        $("button[name='submitBtn']").click(function () {
+            $("form input[name='title']").val("test");
+            $("form input[name='content_html']").val("hello");
+            $("form input[name='public']").attr("checked","checked");
+            $("form input[name='allow_comment']").attr("checked","checked");
+            document.editForm.submit();
+        })
+
+//        $("#tabs-content #source textarea").change(function () {
+//            tinymce.activeEditor.setContent($(this).val());
+//        })
 
     });
 </script>
@@ -54,9 +55,13 @@
 
 {% block content %}
 <div class="container">
-    <h1>{{article.title}}</h1>
 
     <div class="col-sm-8">
+        <div class="input-group">
+            <span class="input-group-addon" id="sizing-addon1">Title:</span>
+            <input type="text" class="form-control" value="{{editForm.title.data}}" aria-describedby="sizing-addon1">
+        </div>
+        <br><br>
         <div id="tabs">
             <ul class="nav nav-tabs">
                 <li class="active" role="presentation"><a href="#view">View</a></li>
@@ -65,12 +70,22 @@
         </div>
         <div id="tabs-content">
             <div id="view">
-                <textarea>Hello World</textarea>
+                <textarea>{{editForm.content_html.data}}</textarea>
             </div>
             <div id="source">
-                <pre class="prettyprint lang-html"><xmp></xmp></pre>
+                <textarea></textarea>
             </div>
         </div>
+        <br><br>
+        <form name="editForm" action="" method="post" style="display: block">
+            <input type="text" name="title" value="{{editForm.title.data}}">
+            <input type="text" name="content_html" value="{{editForm.content_html.data}}">
+            <input type="checkbox" name="public">
+            <input type="checkbox" name="allow_comment">
+            {{editForm.hidden_tag()}}
+            <button type="submit" name="submitBtn" class="btn btn-default">Submit</button>
+        </form>
+
     </div>
 </div>
 
