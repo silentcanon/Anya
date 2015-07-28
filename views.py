@@ -51,6 +51,7 @@ def logout():
 
 @app.route('/post', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def post():
     user = g.user
     print user.id
@@ -70,6 +71,23 @@ def post():
     db.session.add(newArticle)
     db.session.commit()
     return redirect(url_for(request.args.next) or url_for("hello"))
+
+@app.route('/postnew', methods=['GET','POST'])
+@login_required
+@admin_required
+def post_article():
+    user = g.user
+    editForm = EditForm(request.form)
+    if request.method == 'POST' and editForm.validate():
+        print(editForm.content_html.data)
+        return redirect(url_for('index'))
+    elif editForm.errors is not None:
+        flash('Unknown error', 'error')
+
+    return render_template('blog_edit.html', editForm=editForm, func='new')
+
+
+
 
 @app.route("/blog/archives/<url_title>")
 def blog(url_title):
@@ -97,7 +115,7 @@ def blog_edit(url_title):
     else:
         if editForm.errors:
             print editForm.errors
-    return render_template("blog_edit.html", editForm=editForm)
+    return render_template("blog_edit.html", editForm=editForm, func='edit')
 
 
     # article.content_html = editForm.content_html.data
@@ -150,7 +168,7 @@ def photo_upload():
 @app.route('/hello', methods=['GET','POST'])
 @login_required
 def hello():
-    return render_template('hello.html')
+    return render_template('index.html')
 
 @lm.user_loader
 def load_user(id):

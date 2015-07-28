@@ -5,10 +5,14 @@
     {% if g.user.is_admin() %}
     <div>
         <ul class="nav nav-pills">
-            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a></li>
-            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-trash"></span>&nbsp;Tash</a></li>
-            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;View</a></li>
-            <li role="presentation"><a href="#"><span class="glyphicon glyphicon-stats"></span>&nbsp;Stats</a></li>
+            <li role="presentation"><a href="{{url_for('blog_edit',url_title=article.url_title)}}">
+                <span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a></li>
+            <li role="presentation"><a href="#">
+                <span class="glyphicon glyphicon-trash"></span>&nbsp;Tash</a></li>
+            <li role="presentation"><a href="{{url_for('blog',url_title=article_url_title)}}">
+                <span class="glyphicon glyphicon-eye-open"></span>&nbsp;View</a></li>
+            <li role="presentation"><a href="#">
+                <span class="glyphicon glyphicon-stats"></span>&nbsp;Stats</a></li>
         </ul>
     </div>
     {% endif %}

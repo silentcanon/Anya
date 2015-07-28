@@ -81,8 +81,8 @@ class Article(db.Model):
     brief_content = db.Column(db.UnicodeText)
     create_time = db.Column(db.DateTime, index=True)
     modified_time = db.Column(db.DateTime)
-    allow_comment = db.Column(db.Boolean)
-    public = db.Column(db.Boolean)
+    allow_comment = db.Column(db.Boolean, default=True)
+    public = db.Column(db.Boolean, default=True)
     removed = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -90,7 +90,7 @@ class Article(db.Model):
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
         allow_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
-                      'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'p']
+                      'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'p', 'embed', 'script']
         target.content_html = bleach.linkify(bleach.clean(
             markdown(value, output_form='html'),
             tags=allow_tags, strip=True
