@@ -16,15 +16,15 @@ class LoginForm(Form):
     user = None
 
     def validate(self):
-        ##if not Form.validate_on_submit(self):
-        ##    return False
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
         self.user = User.query.filter_by(username = self.username.data).first()
         if not self.user:
-            ##flash("Invalid username!!!!")
             self.username.errors = ("Invalid username",)
             return False
         if not self.user.verify_password(self.password.data):
-            ##flash("Invalid password!!!!")
             self.password.errors = ("Invalid password",)
             return False
         return True
@@ -38,8 +38,8 @@ class PostForm(Form):
     submit = SubmitField("Submit")
 
 class EditForm(Form):
-    title = StringField('Title', validators=[DataRequired()])
-    content_html = StringField('Content', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired('Title should not be empty')])
+    content_html = StringField('Content', validators=[DataRequired('Content should not be empty')])
     allow_comment = BooleanField('Allow Comment?', default=True)
     public = BooleanField('Public?', default=True)
     ##submit = SubmitField("Submit")
@@ -52,5 +52,14 @@ class EditForm(Form):
         editForm.public = article.public
         editForm.content_html = article.content_html
         return editForm
+
+
+
+
+
+
+
+
+
 
 

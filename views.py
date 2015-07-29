@@ -78,11 +78,9 @@ def post():
 def post_article():
     user = g.user
     editForm = EditForm(request.form)
-    if request.method == 'POST' and editForm.validate():
+    if editForm.validate_on_submit():
         print(editForm.content_html.data)
         return redirect(url_for('index'))
-    elif editForm.errors is not None:
-        flash('Unknown error', 'error')
 
     return render_template('blog_edit.html', editForm=editForm, func='new')
 

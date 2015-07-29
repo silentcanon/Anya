@@ -59,7 +59,29 @@
 </script>
 {% endblock %}
 
+
+
+
+
+
+
 {% block content %}
+
+{% for message in editForm.title.errors %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% for message in editForm.content_html.errors %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+{% endfor %}
+
+
 <div class="container">
 
     <div class="col-sm-8">
