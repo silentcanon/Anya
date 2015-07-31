@@ -6,7 +6,6 @@ from flask.ext.login import current_user
 @main.route('/')
 @main.route('/index')
 def index():
-    user = current_user
     posts = [
         {
             'author': {'username': 'Canon'},

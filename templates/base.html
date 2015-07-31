@@ -26,14 +26,14 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Home</a></li>
-                    <li><a href="{{url_for('blog_overview')}}">Blog</a></li>
+                    <li><a href="{{url_for('blog.blog_overview')}}">Blog</a></li>
                     <li><a href="#About">About</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    {% if g.user.is_authenticated() %}
-                    <li><a href="{{ url_for('logout') }}">{{g.user.username}}  Sign Out</a></li>
+                    {% if current_user.is_authenticated() %}
+                    <li><a href="{{ url_for('auth.logout') }}">{{current_user.username}}  Sign Out</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('login') }}">Sign In</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
                     {% endif %}
                 </ul>
             </div><!--/.nav-collapse -->
