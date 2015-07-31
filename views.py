@@ -1,8 +1,8 @@
 __author__ = 'Canon'
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm
-from .forms import LoginForm, PostForm, EditForm
+from app import db, lm
+from .forms import  PostForm, EditForm
 from .models import User, Article, Permission
 from decorators import admin_required
 from utils import allowed_file
@@ -10,43 +10,9 @@ import datetime
 
 
 
-@app.route('/')
-@app.route('/index')
-def index():
-    user = g.user
-    posts = [
-        {
-            'author': {'username': 'Canon'},
-            'body': 'Beautiful day!'
-        },
-        {
-            'author': {'username': 'Kanon'},
-            'body': 'I am Canon!'
-        }
-    ]
-    return render_template('index.html',
-                           title='Home',
-                           user=user,
-                           posts=posts)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if not form.validate_on_submit():
-        ##flash("Username or password invalid", 'Error')
-        return render_template('login.html', title='Login', form=form)
-    user = form.user
-    login_user(user, remember=form.remember_me.data)
-    flash("Login successfully")
-    return redirect(url_for("hello"))
 
-@app.route('/logout')
-def logout():
-    flash("%s, you have been logged out" % g.user.username)
-    logout_user()
-    return redirect(url_for('index'))
+
 
 
 @app.route('/post', methods=['GET', 'POST'])
@@ -76,7 +42,6 @@ def post():
 @login_required
 @admin_required
 def post_article():
-    user = g.user
     editForm = EditForm(request.form)
     if editForm.validate_on_submit():
         print(editForm.content_html.data)
@@ -168,9 +133,6 @@ def photo_upload():
 def hello():
     return render_template('index.html')
 
-@lm.user_loader
-def load_user(id):
-    return User.query.get(int(id))
 
 
 

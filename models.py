@@ -5,7 +5,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from markdown import markdown
 import bleach
 
-
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -69,6 +68,7 @@ class AnonymousUser(AnonymousUserMixin):
 
     def is_admin(self):
         return False
+
 
 
 
@@ -163,6 +163,12 @@ class Relationship(db.Model):
     def __repr__(self):
         return '<article %d -- tag %d>' % (self.article_id, self.tag_id)
 
+
+
+
+@lm.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 db.event.listen(Article.content_markdown, 'set', Article.on_change_body)
 lm.anonymous_user = AnonymousUser
