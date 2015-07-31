@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+<script>
+    $(document).ready(function () {
+        $("ul #blog").addClass('active').siblings().removeClass('active')
+    });
+</script>
+{% endblock %}

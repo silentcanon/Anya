@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "blog_base.html" %}
 {% block head %}
 {{ super() }}
 <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
@@ -40,7 +40,7 @@
         });
 
         $("button[name='submitBtn']").click(function () {
-            titleData = $(".col-sm-8 .input-group input #titleinput").val();
+            titleData = $(".input-group #titleinput").val();
             contentData = tinymce.activeEditor.getContent({source_view: true});
             $("form input[name='title']").val(titleData);
             $("form input[name='content_html']").val(contentData);
@@ -48,7 +48,7 @@
 //            $("form input[name='public']").attr("checked","checked");
 //
 //            $("form input[name='allow_comment']").attr("checked","checked");
-            document.editForm.submit();
+            $("form[name='editForm']").submit();
         })
 
 //        $("#tabs-content #source textarea").change(function () {
@@ -106,8 +106,8 @@
         </div>
         <br><br>
         <form name="editForm" action="" method="post">
-            <input type="text" name="title" value="{{editForm.title.data}}"  style="display: none">
-            <input type="text" name="content_html" value="{{editForm.content_html.data}}"  style="display: none">
+            <input type="text" name="title" value="{{editForm.title.data}}"  style="display: block">
+            <input type="text" name="content_html" value="{{editForm.content_html.data}}"  style="display: block">
             <p><input type="checkbox"
                       {% if editForm.public.data == True %}
                       checked
@@ -120,7 +120,7 @@
                       {% endif %}
                       name="allow_comment">&nbsp Allow Comment?</p>
             {{editForm.hidden_tag()}}
-            <button type="submit" name="submitBtn" class="btn btn-default">
+            <button type="button" name="submitBtn" class="btn btn-default">
                 {% if func is not none and func == 'edit' %}
                 Save Changes
                 {% else %}

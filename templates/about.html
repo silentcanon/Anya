@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<script>
+    $(document).ready(function () {
+        $("ul #about").addClass('active').siblings().removeClass('active');
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+Hello World
+{% endblock %}

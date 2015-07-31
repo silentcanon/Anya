@@ -21,6 +21,16 @@ class EditForm(Form):
     public = BooleanField('Public?', default=True)
     ##submit = SubmitField("Submit")
 
+    # def validate(self):
+    #     rv = Form.validate(self)
+    #     if not rv:
+    #         return False
+    #     ar = Article.query.filter_by(url_title=self.title.data).first()
+    #     if ar is not None:
+    #         self.title.errors.append("This title is existed, please try another one")
+    #         return False
+    #     return True
+
     @staticmethod
     def constructFrom(article):
         editForm = EditForm

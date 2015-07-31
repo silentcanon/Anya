@@ -2,7 +2,7 @@ __author__ = 'Canon'
 from . import blog
 from flask import redirect, render_template, url_for, request
 from flask.ext.login import login_required, current_user
-from datetime import datetime
+import datetime
 from app.decorators import admin_required
 from .forms import PostForm, EditForm
 from ..models import Article
@@ -10,12 +10,11 @@ from app import db
 
 
 
-@blog.route('/post', methods=['GET', 'POST'])
+@blog.route('/postsimple', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def post():
     user = current_user
-    print user.id
     form = PostForm()
     if not form.validate_on_submit():
         return render_template('post.html', title='Add a post', form=form)
@@ -33,13 +32,25 @@ def post():
     db.session.commit()
     return redirect(url_for(request.args.next) or url_for("main.index"))
 
-@blog.route('/postnew', methods=['GET','POST'])
+@blog.route('/post', methods=['GET','POST'])
 @login_required
 @admin_required
 def post_article():
+    user = current_user
     editForm = EditForm(request.form)
     if editForm.validate_on_submit():
-        print(editForm.content_html.data)
+        url_title = editForm.title.data
+        title = editForm.title.data
+        content_html = editForm.content_html.data
+        allow_comment = editForm.allow_comment.data
+        public = editForm.public.data
+        create_time = datetime.datetime.utcnow()
+        modified_time = create_time
+        newArticle = Article(url_title=url_title, title=title, content_html=content_html,
+                            allow_comment=allow_comment, create_time=create_time,
+                            modified_time=modified_time, user_id=user.id, public=public)
+        db.session.add(newArticle)
+        db.session.commit()
         return redirect(url_for('main.index'))
 
     return render_template('blog_edit.html', editForm=editForm, func='new')
@@ -64,23 +75,30 @@ def blog_edit(url_title):
         return redirect(url_for("main.index"))
 
     editForm = EditForm(request.form)
+
+    if editForm.validate_on_submit():
+        url_title = editForm.title.data
+        print url_title
+        title = editForm.title.data
+        content_html = editForm.content_html.data
+        allow_comment = editForm.allow_comment.data
+        public = editForm.public.data
+        ## update article
+        article.content_html = content_html
+        article.title = title
+        article.url_title = url_title
+        article.allow_comment = allow_comment
+        article.public = public
+        article.modified_time = datetime.datetime.utcnow()
+        db.session.commit()
+        return redirect(url_for('main.index'))
+
     editForm.title.data = article.title
     editForm.content_html.data = article.content_html
     editForm.public.data = article.public
     editForm.allow_comment.data = article.allow_comment
-    if request.method == 'POST' and editForm.validate():
-        print(editForm.content_html.data)
-        return redirect(url_for('main.index'))
-    else:
-        if editForm.errors:
-            print editForm.errors
     return render_template("blog_edit.html", editForm=editForm, func='edit')
 
-
-    # article.content_html = editForm.content_html.data
-    # article.title = editForm.title.data
-    # article.modified_time = datetime.datetime.utcnow()
-    # db.session.commit()
 
 
 @blog.route("/", defaults={'page_id': 1})
