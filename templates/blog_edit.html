@@ -106,8 +106,8 @@
         </div>
         <br><br>
         <form name="editForm" action="" method="post">
-            <input type="text" name="title" value="{{editForm.title.data}}"  style="display: block">
-            <input type="text" name="content_html" value="{{editForm.content_html.data}}"  style="display: block">
+            <input type="text" name="title" style="display: none">
+            <input type="text" name="content_html" style="display: none">
             <p><input type="checkbox"
                       {% if editForm.public.data == True %}
                       checked

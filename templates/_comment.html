@@ -1,0 +1,56 @@
+
+<script>
+    var csrftoken = $('meta[name=csrf-token]').attr('content')
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken)
+            }
+        }
+    });
+
+    $(function () {
+        $("button[name='submitBtn']").click(function (e) {
+                    $.ajax({
+                        url: "{{url_for('blog.post_comment')}}",
+                        data: $("#commentForm").serialize(),
+                        type: 'POST',
+                        success: function (response) {
+                            grecaptcha.reset()
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            grecaptcha.reset()
+                            console.log(error);
+                        }
+                    });
+                    e.preventDefault();
+                }
+        )
+    })
+</script>
+
+
+<div class="row" id="write_comment">
+    <div class="col-sm-8">
+        <h4>Leave a comment</h4>
+        <form id="commentForm" action="" method="post" class="form" role="form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input id="url_title" name="url_title" type="hidden" value="{{article.url_title}}">
+            <div class="form-group "><label class="control-label">Name</label>
+                <input class="form-control" id="name" name="name" required="" type="text" value="">
+            </div>
+            <div class="form-group "><label class="control-label">Email</label>
+                <input class="form-control" id="email" name="email" required="" type="text" value="">
+            </div>
+            <div class="form-group "><label class="control-label">Comment</label>
+                <textarea class="form-control" id="comment" name="comment" required=""></textarea>
+            </div>
+            <div class="form-group "><label class="control-label">Captcha</label>
+                <div class="g-recaptcha" data-sitekey="6Lf6vQoTAAAAAF4blCtBD4HDbutDs_OeT58s4Xo7"></div>
+            </div>
+            <button type="submit" name="submitBtn" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+</div>

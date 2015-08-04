@@ -15,7 +15,7 @@ class LoginForm(Form):
         rv = Form.validate(self)
         if not rv:
             return False
-
+        print self.username.data
         self.user = User.query.filter_by(username=self.username.data).first()
         if not self.user:
             self.username.errors = ("Invalid username",)

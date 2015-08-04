@@ -3,8 +3,9 @@ from . import blog
 from flask import redirect, render_template, url_for, request
 from flask.ext.login import login_required, current_user
 import datetime
+from app import utils
 from app.decorators import admin_required
-from .forms import PostForm, EditForm
+from .forms import PostForm, EditForm, CommentForm
 from ..models import Article
 from app import db
 
@@ -39,12 +40,12 @@ def post_article():
     user = current_user
     editForm = EditForm(request.form)
     if editForm.validate_on_submit():
-        url_title = editForm.title.data
+        create_time = datetime.datetime.utcnow()
         title = editForm.title.data
+        url_title = utils.generate_blog_url(create_time, title)
         content_html = editForm.content_html.data
         allow_comment = editForm.allow_comment.data
         public = editForm.public.data
-        create_time = datetime.datetime.utcnow()
         modified_time = create_time
         newArticle = Article(url_title=url_title, title=title, content_html=content_html,
                             allow_comment=allow_comment, create_time=create_time,
@@ -61,9 +62,10 @@ def post_article():
 @blog.route("/archives/<url_title>")
 def blog_view(url_title):
     article = Article.query.filter_by(url_title=url_title).first()
+    commentForm = CommentForm(request.form)
     if article is None:
         return redirect(url_for("main.index"))
-    return render_template("blog.html", article=article)
+    return render_template("blog.html", article=article, commentForm=commentForm)
 
 
 @blog.route("/archives/<url_title>/edit", methods=['GET', 'POST'])
@@ -77,8 +79,6 @@ def blog_edit(url_title):
     editForm = EditForm(request.form)
 
     if editForm.validate_on_submit():
-        url_title = editForm.title.data
-        print url_title
         title = editForm.title.data
         content_html = editForm.content_html.data
         allow_comment = editForm.allow_comment.data
@@ -108,3 +108,19 @@ def blog_overview(page_id):
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(page_id, per_page=2, error_out=False)
     articles = pagination.items
     return render_template("blog_overview.html", articles=articles, pagination=pagination)
+
+
+
+@blog.route("/comment", methods=['POST'])
+def post_comment():
+    commentForm = CommentForm()
+    if commentForm.validate_on_submit():
+        url_title = commentForm.url_title.data
+        name = commentForm.name.data
+        email = commentForm.email.data
+        comment = commentForm.comment.data
+
+
+
+        return "Success"
+    return "Error"

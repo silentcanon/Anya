@@ -5,6 +5,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.pagedown import PageDown
 from flask.ext.bootstrap import Bootstrap
+from flask_wtf.csrf import CsrfProtect
 
 # app = Flask(__name__)
 # app.config.from_object('config')
@@ -22,6 +23,7 @@ from flask.ext.bootstrap import Bootstrap
 # from app import views, models
 
 bootstrap = Bootstrap()
+csrf = CsrfProtect()
 db = SQLAlchemy()
 lm = LoginManager()
 lm.session_protection = 'strong'
@@ -33,9 +35,9 @@ def create_app():
     app.config.from_object('config')
 
     bootstrap.init_app(app)
+    csrf.init_app(app)
     lm.init_app(app)
     db.init_app(app)
-
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
@@ -44,6 +46,9 @@ def create_app():
 
     from blog import blog as blog_blueprint
     app.register_blueprint(blog_blueprint, url_prefix='/blog')
+
+    # with app.app_context():
+    #     db.create_all()
 
 
     return app

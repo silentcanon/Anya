@@ -74,7 +74,7 @@ class AnonymousUser(AnonymousUserMixin):
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    url_title = db.Column(db.Unicode(300), index=True)
+    url_title = db.Column(db.String(300), primary_key=True)
     title = db.Column(db.Unicode(300))
     content_html = db.Column(db.UnicodeText)
     content_markdown = db.Column(db.UnicodeText)
@@ -84,6 +84,7 @@ class Article(db.Model):
     allow_comment = db.Column(db.Boolean, default=True)
     public = db.Column(db.Boolean, default=True)
     removed = db.Column(db.Boolean, default=False)
+    is_brief = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
@@ -110,7 +111,7 @@ class Comment(db.Model):
     parentCmt_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
 
     def __repr__(self):
-        return '<Comment %d>' % (self.id)
+        return '<comment %d>' % (self.id)
 
 
 
@@ -126,7 +127,7 @@ class Role(db.Model):
     __tablename__ = 'role'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    default = db.Column(db.Boolean, default=False, unique=True)
+    default = db.Column(db.Boolean, default=False)
     permissions = db.Column(db.Integer)
 
     @staticmethod
