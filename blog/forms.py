@@ -5,10 +5,9 @@ from wtforms import StringField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from flask.ext.pagedown.fields import PageDownField
 from flask import request
-import app
 import json
-import urllib2, urllib
-from ..models import  Article
+import urllib2
+import urllib
 
 
 class PostForm(Form):
@@ -55,20 +54,19 @@ class CommentForm(Form):
         rv = Form.validate(self)
         if not rv:
             return False
+
         recaptcha = request.form.get("g-recaptcha-response")
+
         data = {'secret': "6Lf6vQoTAAAAAIcVbvcQbJmrWyWV6FKsPDwdZ6_I",
                 'response': recaptcha
                 }
-        print data
         req = urllib2.Request("https://www.google.com/recaptcha/api/siteverify")
         req.add_header("Content-type", "application/x-www-form-urlencoded")
         response = urllib2.urlopen(req, urllib.urlencode(data))
         res = json.load(response)
-        print res
         if not res['success']:
             if res.get('error-codes'):
                 self.errors.update({'recaptcha': res.get('error-codes')})
-                print self.errors
             return False
         return True
 

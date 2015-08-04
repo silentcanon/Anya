@@ -102,13 +102,25 @@ class Article(db.Model):
 
 
 class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    username = db.Column(db.String(64))
+    username = db.Column(db.Unicode(64))
     timestamp = db.Column(db.DateTime)
-    article_id = db.Column(db.Integer, index = True)
+    article_url_title = db.Column(db.String(300), db.ForeignKey('article.url_title'))
     content = db.Column(db.Unicode(300))
     parentCmt_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+
+    def toDict(self):
+        d = {
+            'id': self.id,
+            'user_id': self.user_id,
+            'username': self.username,
+            'timestamp': self.timestamp,
+            'article_url_title': self.article_url_title,
+            'content': self.content,
+            'parentCmt_id': self.parentCmt_id
+        }
+        return d
 
     def __repr__(self):
         return '<comment %d>' % (self.id)

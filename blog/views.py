@@ -6,8 +6,9 @@ import datetime
 from app import utils
 from app.decorators import admin_required
 from .forms import PostForm, EditForm, CommentForm
-from ..models import Article
+from ..models import Article, Comment
 from app import db
+import json
 
 
 
@@ -111,16 +112,27 @@ def blog_overview(page_id):
 
 
 
-@blog.route("/comment", methods=['POST'])
-def post_comment():
+@blog.route("/comment/<url_title>", methods=['POST'])
+def post_comment(url_title):
     commentForm = CommentForm()
-    if commentForm.validate_on_submit():
+    res = {"success": False}
+    if commentForm.url_title.data != url_title:
+        res.update({'errors': {'url_title' :'target blog inconsistent'}})
+    elif commentForm.validate_on_submit():
         url_title = commentForm.url_title.data
         name = commentForm.name.data
         email = commentForm.email.data
         comment = commentForm.comment.data
+        res['success'] = True
+    else:
+        res.update({'errors': commentForm.errors})
+    return json.dumps(res)
 
+@blog.route("/comment/<url_title>", methods=['GET'])
+def get_comments(url_title):
 
+    comments = Comment.query.filter_by(article_url_title=url_title).all()
 
-        return "Success"
-    return "Error"
+    for comment in comments:
+        print comment.toDict()
+    return "Hello"

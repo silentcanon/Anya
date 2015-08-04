@@ -10,18 +10,22 @@
         }
     });
 
+    function update_comment_area() {
+
+    }
+
     $(function () {
         $("button[name='submitBtn']").click(function (e) {
                     $.ajax({
-                        url: "{{url_for('blog.post_comment')}}",
+                        url: "{{url_for('blog.post_comment',url_title=article.url_title) }}",
                         data: $("#commentForm").serialize(),
                         type: 'POST',
                         success: function (response) {
-                            grecaptcha.reset()
+                            grecaptcha.reset();
                             console.log(response);
                         },
                         error: function (error) {
-                            grecaptcha.reset()
+                            grecaptcha.reset();
                             console.log(error);
                         }
                     });
@@ -36,7 +40,8 @@
     <div class="col-sm-8">
         <h4>Leave a comment</h4>
         <form id="commentForm" action="" method="post" class="form" role="form">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <!--<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />-->
+            {{ commentForm.hidden_tag() }}
             <input id="url_title" name="url_title" type="hidden" value="{{article.url_title}}">
             <div class="form-group "><label class="control-label">Name</label>
                 <input class="form-control" id="name" name="name" required="" type="text" value="">
