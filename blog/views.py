@@ -112,7 +112,7 @@ def blog_overview(page_id):
 
 
 
-@blog.route("/comment/<url_title>", methods=['POST'])
+@blog.route("/comments/<url_title>", methods=['POST'])
 def post_comment(url_title):
     commentForm = CommentForm()
     res = {"success": False}
@@ -128,11 +128,20 @@ def post_comment(url_title):
         res.update({'errors': commentForm.errors})
     return json.dumps(res)
 
-@blog.route("/comment/<url_title>", methods=['GET'])
+@blog.route("/comments/<url_title>", methods=['GET'])
 def get_comments(url_title):
 
     comments = Comment.query.filter_by(article_url_title=url_title).all()
-
+    res = []
     for comment in comments:
-        print comment.toDict()
-    return "Hello"
+        res.append(comment.toDict())
+    print res
+    json_res = json.dumps(res, indent=4, separators=(',', ':'))
+    print json_res
+    return json_res
+
+
+
+@blog.route("/comments/test/<url_title>", methods=['GET'])
+def commentViewTest(url_title):
+    return render_template('commentTest.html', url_title=url_title)

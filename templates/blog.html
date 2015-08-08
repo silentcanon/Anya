@@ -15,11 +15,9 @@
         <a href="{{ url_for('blog.blog_edit',url_title=article.url_title) }}">Edit</a>
         {% endif %}
 
-        <div id="comments">
+        {% include "_show_comments.html" %}
 
-        </div>
-
-        {% include "_comment.html" %}
+        {% include "_leave_comment.html" %}
     </div>
 </div>
 </div>

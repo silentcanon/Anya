@@ -11,7 +11,15 @@
     });
 
     function update_comment_area() {
-
+        $.ajax({
+          url: "{{ url_for(get_comments), url_title=article.url_title }}",
+          //data: data,
+          success: function (response) {
+              //update views
+              console.log(response);
+          },
+          dataType: 'json'
+        });
     }
 
     $(function () {
@@ -36,7 +44,7 @@
 </script>
 
 
-<div class="row" id="write_comment">
+<div class="row" id="leave_comment">
     <div class="col-sm-8">
         <h4>Leave a comment</h4>
         <form id="commentForm" action="" method="post" class="form" role="form">
