@@ -10,9 +10,7 @@
           success: function (response) {
               //update views
               console.log(response);
-              html = show_comments(response);
-              console.log(html);
-              $(".container p").html(html);
+              show_comments(response);
           },
           dataType: 'json'
         });
@@ -24,6 +22,6 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-   <p></p>
+   {% include "_show_comments.html" %}
 </div>
 {% endblock %}

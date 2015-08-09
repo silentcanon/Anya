@@ -123,6 +123,22 @@ def post_comment(url_title):
         name = commentForm.name.data
         email = commentForm.email.data
         comment = commentForm.comment.data
+        if commentForm.reply_to.data:
+            reply_to_id = commentForm.reply_to.data
+            cmt = Comment.query.get(int(reply_to_id))
+            print cmt.article_url_title
+            assert(cmt.article_url_title == url_title)
+        # TODO
+        # validate whether reply_to_id is the comment id belonging
+        # to the article
+        else:
+            reply_to = None
+        if commentForm.user_id.data:
+            user_id = commentForm.user_id.data
+            assert(int(user_id) == current_user.id)
+        else:
+            user_id = None
+
         res['success'] = True
     else:
         res.update({'errors': commentForm.errors})

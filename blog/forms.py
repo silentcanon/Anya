@@ -49,6 +49,8 @@ class CommentForm(Form):
     name = StringField('name', validators=[DataRequired('Name should not be empty')])
     email = StringField('email', validators=[DataRequired('Email should not be empty')])
     comment = StringField('comment', validators=[DataRequired('Email should not be empty')])
+    reply_to = StringField('reply_to')
+    user_id = StringField('user_id')
 
     def validate(self):
         rv = Form.validate(self)

@@ -10,18 +10,6 @@
         }
     });
 
-    function update_comment_area() {
-        $.ajax({
-          url: "{{ url_for(get_comments), url_title=article.url_title }}",
-          //data: data,
-          success: function (response) {
-              //update views
-              console.log(response);
-          },
-          dataType: 'json'
-        });
-    }
-
     $(function () {
         $("button[name='submitBtn']").click(function (e) {
                     $.ajax({
@@ -31,6 +19,7 @@
                         success: function (response) {
                             grecaptcha.reset();
                             console.log(response);
+                            update_comment_area();
                         },
                         error: function (error) {
                             grecaptcha.reset();
@@ -50,13 +39,22 @@
         <form id="commentForm" action="" method="post" class="form" role="form">
             <!--<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />-->
             {{ commentForm.hidden_tag() }}
+            <input id="reply_to" name="reply_to" type="hidden">
             <input id="url_title" name="url_title" type="hidden" value="{{article.url_title}}">
+            {% if current_user.is_authenticated() %}
+            <input class="form-control" type="hidden" id="name" name="name" required="" value="{{current_user.username}}">
+            <input class="form-control" type="hidden" id="user_id" name="user_id" value="{{current_user.id}}">
+            <input class="form-control" id="email" name="email" required="" type="hidden" value="{{current_user.email}}">
+            {% else %}
+            <input class="form-control" type="hidden" id="user_id" name="user_id" value="">
             <div class="form-group "><label class="control-label">Name</label>
                 <input class="form-control" id="name" name="name" required="" type="text" value="">
             </div>
             <div class="form-group "><label class="control-label">Email</label>
                 <input class="form-control" id="email" name="email" required="" type="text" value="">
             </div>
+            {% endif %}
+
             <div class="form-group "><label class="control-label">Comment</label>
                 <textarea class="form-control" id="comment" name="comment" required=""></textarea>
             </div>
