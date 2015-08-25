@@ -12,34 +12,33 @@
           success: function (response) {
               //update views
               show_comments(response, callback);
-
           },
           dataType: 'json'
         });
     };
 
-
-    $(document).ready (function () {
-        update_comment_area( function() {
-                    $("div.footer a.reply_comment").click(function (e) {
+    function register_reply_link(callback) {
+        $("div.footer a.reply_comment").click(function (e) {
                         var to_username = $(this).attr('username');
                         var to_comment_id = $(this).attr('comment_id');
                         $("#leave_comment div h4").html("Reply to: "+ to_username);
                         $("#reply_to").val(to_comment_id);
                         var comment_top = $("#leave_comment").offset().top;
                         jQuery("html body").animate({scrollTop:comment_top},300);
+                        $("textarea#comment").focus();
                         $("#leave_comment div h4").append("&nbsp;<a class='cancel' href='#'>Cancel</a>");
                         $("a.cancel").click(function (e) {
                             $("#leave_comment div h4").html("Leave a comment");
                             $("#reply_to").removeAttr('value');
                             e.preventDefault();
-                        })
+                        });
                         e.preventDefault();
                     });
-                }
-        );
+        callback();
+    }
 
-
+    $(document).ready (function () {
+        update_comment_area(register_reply_link);
     });
 
 </script>

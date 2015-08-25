@@ -19,7 +19,17 @@
                         success: function (response) {
                             grecaptcha.reset();
                             console.log(response);
-                            update_comment_area();
+                            update_comment_area(function () {
+                                register_reply_link(function(){
+                                    $comment_textarea = $("textarea#comment");
+                                    $comment_textarea.val("").blur();
+                                    $("#leave_comment div h4").html("Leave a comment");
+                                    $("#reply_to").removeAttr('value');
+                                    var res_json = JSON.parse(response);
+                                    var comment_id = res_json['id'];
+                                    scroll2comment(comment_id);
+                                })
+                            });
                         },
                         error: function (error) {
                             grecaptcha.reset();

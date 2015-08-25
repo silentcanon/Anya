@@ -102,7 +102,7 @@ class Article(db.Model):
 
 
 class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(20), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     username = db.Column(db.Unicode(64))
     timestamp = db.Column(db.DateTime)
@@ -115,7 +115,7 @@ class Comment(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'username': self.username,
-            'timestamp': self.timestamp,
+            'timestamp': self.timestamp.isoformat(),
             'article_url_title': self.article_url_title,
             'content': self.content,
             'parentCmt_id': self.parentCmt_id

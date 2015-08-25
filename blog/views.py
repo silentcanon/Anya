@@ -6,7 +6,7 @@ import datetime
 from app import utils
 from app.decorators import admin_required
 from .forms import PostForm, EditForm, CommentForm
-from ..models import Article, Comment
+from ..models import Article, Comment, User
 from app import db
 import json
 
@@ -125,21 +125,24 @@ def post_comment(url_title):
         comment = commentForm.comment.data
         if commentForm.reply_to.data:
             reply_to_id = commentForm.reply_to.data
-            cmt = Comment.query.get(int(reply_to_id))
-            print cmt.article_url_title
+            cmt = Comment.query.get(reply_to_id)
             assert(cmt.article_url_title == url_title)
-        # TODO
-        # validate whether reply_to_id is the comment id belonging
-        # to the article
         else:
-            reply_to = None
+            reply_to_id = None
         if commentForm.user_id.data:
             user_id = commentForm.user_id.data
             assert(int(user_id) == current_user.id)
         else:
             user_id = None
+        now = datetime.datetime.utcnow()
+        id = utils.generate_blog_comment_id(now, user_id, url_title)
+        comment = Comment(id=id, user_id=user_id, username=name, timestamp=now,
+                          article_url_title=url_title, content=comment, parentCmt_id=reply_to_id)
+        db.session.add(comment)
+        db.session.commit()
 
         res['success'] = True
+        res['id'] = id
     else:
         res.update({'errors': commentForm.errors})
     return json.dumps(res)
