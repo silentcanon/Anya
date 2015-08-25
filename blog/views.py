@@ -4,7 +4,7 @@ from flask import redirect, render_template, url_for, request
 from flask.ext.login import login_required, current_user
 import datetime
 from app import utils
-from app.decorators import admin_required
+from app.decorators import admin_required, admin_required_json
 from .forms import PostForm, EditForm, CommentForm
 from ..models import Article, Comment, User
 from app import db
@@ -109,6 +109,23 @@ def blog_overview(page_id):
     pagination = Article.query.order_by(Article.create_time.desc()).paginate(page_id, per_page=2, error_out=False)
     articles = pagination.items
     return render_template("blog_overview.html", articles=articles, pagination=pagination)
+
+
+@blog.route("/archives/<url_title>/remove", methods=['GET'])
+@login_required
+@admin_required_json
+def blog_remove(url_title):
+    res = {"success": False}
+    article = Article.query.filter_by(url_title=url_title).first()
+    if article is None:
+        res['error': 'Article not Existed']
+        return json.dumps(res)
+    db.session.delete(article)
+    Comment.query.filter_by(article_url_title=url_title).delete()
+    db.session.commit()
+    res["success"] = True
+    return json.dumps(res)
+
 
 
 

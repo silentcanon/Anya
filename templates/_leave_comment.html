@@ -19,8 +19,9 @@
                         success: function (response) {
                             grecaptcha.reset();
                             console.log(response);
-                            update_comment_area(function () {
-                                register_reply_link(function(){
+                            var url = "{{ url_for('.get_comments', url_title=article.url_title) }}";
+                            update_comment_area(url, function () {
+                                register_reply_link(function () {
                                     $comment_textarea = $("textarea#comment");
                                     $comment_textarea.val("").blur();
                                     $("#leave_comment div h4").html("Leave a comment");

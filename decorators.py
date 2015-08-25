@@ -14,5 +14,18 @@ def permission_required(permission):
         return dec_func
     return decorator
 
+def permission_required_json(permission):
+    def decorator(f):
+        @wraps(f)
+        def dec_func(*args, **kwargs):
+            if not current_user.can(permission):
+                return {'success': False, 'error': 'Authorization Failed'}
+            return f(*args, **kwargs)
+        return dec_func
+    return decorator
+
+def admin_required_json(f):
+    return permission_required_json(Permission.ROOT)(f)
+
 def admin_required(f):
     return permission_required(Permission.ROOT)(f)

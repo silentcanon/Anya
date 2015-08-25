@@ -1,5 +1,26 @@
 {% extends "blog_base.html" %}
 {% import "_macros.html" as macros %}
+{% block head %}
+{{ super() }}
+<script src="{{url_for('static', filename='blog_opr.js')}}"></script>
+<script>
+    $(function () {
+        $("a#blog_remove").click(function (e) {
+                    e.preventDefault();
+                    var url_title = $(this).attr('url_title');
+                    console.log(url_title);
+                    var url = "{{url_for('blog.blog_remove', url_title='reserved')}}";
+
+                    url = url.replace(/reserved/g, url_title);
+                    console.log(url);
+                    blog_remove(url, function() {
+                       location.reload();
+                    });
+                }
+        )
+    })
+</script>
+{% endblock %}
 {% block content %}
 <div class="container">
 <div class="row">
