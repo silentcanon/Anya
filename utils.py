@@ -44,3 +44,7 @@ def generate_blog_comment_id(create_time, user_id, blog_title):
         suffix2 = str(user_id)
 
     return prefix + "-" + suffix1 + suffix2
+
+
+def generate_blog_stat_id(article_id, ip):
+    pass

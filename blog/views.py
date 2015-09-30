@@ -6,7 +6,7 @@ import datetime
 from app import utils
 from app.decorators import admin_required, admin_required_json
 from .forms import PostForm, EditForm, CommentForm
-from ..models import Article, Comment, User
+from ..models import Article, Comment, User, BlogStat
 from app import db
 import json
 
@@ -60,12 +60,22 @@ def post_article():
 
 
 
-@blog.route("/archives/<url_title>")
+@blog.route("/archives/<url_title>", methods=['GET'])
 def blog_view(url_title):
     article = Article.query.filter_by(url_title=url_title).first()
     commentForm = CommentForm(request.form)
     if article is None:
         return redirect(url_for("main.index"))
+    ip = request.remote_addr
+    ##print ip
+    article_id = article.id
+    visit_time = datetime.datetime.utcnow()
+    ##print article_id
+    ##print visit_time
+
+    ##blogStat = BlogStat(blog_id=int(article.id), ip=ip, visit_time=datetime.datetime.utcnow())
+    ##db.session.add(blogStat)
+    ##db.session.commit()
     return render_template("blog.html", article=article, commentForm=commentForm)
 
 
@@ -157,7 +167,6 @@ def post_comment(url_title):
                           article_url_title=url_title, content=comment, parentCmt_id=reply_to_id)
         db.session.add(comment)
         db.session.commit()
-
         res['success'] = True
         res['id'] = id
     else:
@@ -166,14 +175,11 @@ def post_comment(url_title):
 
 @blog.route("/comments/<url_title>", methods=['GET'])
 def get_comments(url_title):
-
     comments = Comment.query.filter_by(article_url_title=url_title).all()
     res = []
     for comment in comments:
         res.append(comment.toDict())
-    print res
     json_res = json.dumps(res, indent=4, separators=(',', ':'))
-    print json_res
     return json_res
 
 

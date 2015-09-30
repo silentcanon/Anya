@@ -35,7 +35,7 @@ function show_comments(comments, callback) {
     for (var i = 0; i < comments.length; i++) {
         _single_comment_as_html(comments[i], i + 1, $html_tmpl.clone(), id2floorNum);
     }
-    callback();
+    //callback();
 }
 
 function scroll2comment(comment_id) {
@@ -52,7 +52,9 @@ function update_comment_area(url, callback) {
         //data: data,
         success: function (response) {
             //update views
-            show_comments(response, callback);
+            show_comments(response);
+            //alert();
+            callback();
         },
         dataType: 'json'
     });

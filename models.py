@@ -178,6 +178,16 @@ class Relationship(db.Model):
 
 
 
+class BlogStat(db.Model):
+    __tablename__ = 'blogstat'
+    id = db.Column(db.String(32), primary_key=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('article.id'), index=True)
+    ip = db.Column(db.String(20))
+    visit_time = db.Column(db.DateTime)
+
+
+
+
 
 @lm.user_loader
 def load_user(id):

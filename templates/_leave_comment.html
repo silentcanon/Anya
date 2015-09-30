@@ -26,8 +26,7 @@
                                     $comment_textarea.val("").blur();
                                     $("#leave_comment div h4").html("Leave a comment");
                                     $("#reply_to").removeAttr('value');
-                                    var res_json = JSON.parse(response);
-                                    var comment_id = res_json['id'];
+                                    var comment_id = response['id'];
                                     scroll2comment(comment_id);
                                 })
                             });
@@ -35,7 +34,8 @@
                         error: function (error) {
                             grecaptcha.reset();
                             console.log(error);
-                        }
+                        },
+                        dataType: 'json'
                     });
                     e.preventDefault();
                 }

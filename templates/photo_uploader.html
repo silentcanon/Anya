@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block head %}
+{{ super() }}
+<script src={{url_for('static', filename='js/jquery.Jcrop.min.js' )}}></script>
+<link rel="stylesheet" href={{url_for('static', filename='css/jquery.Jcrop.css' )}}/>
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#target').attr('src', e.target.result);
+                $('#preview-pane .preview-container img').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    ;
+
+
+    jQuery(function ($) {
+        $("#image_upload").change(function () {
+            readURL(this);
+        });
+
+        var jcrop_api;
+        var boundx;
+        var boundy;
+
+
+        $preview = $('#preview-pane');
+        console.log($preview.html());
+        $pcnt = $('#preview-pane .preview-container');
+        $pimg = $('#preview-pane .preview-container img');
+        var xsize = $pimg.width();
+        var ysize = $pimg.height();
+        console.log('init', [xsize, ysize]);
+
+
+        $('#target').load(function () {
+            $(this).Jcrop({
+                onChange: updatePreview,
+                onSelect: updatePreview,
+            }, function () {
+                var bounds = this.getBounds();
+                boundx = bounds[0];
+                boundy = bounds[1];
+                console.log([boundx, boundy]);
+                jcrop_api = this;
+                $preview.appendTo(jcrop_api.ui.holder);
+            });
+        });
+
+        var updatePreview = function (c) {
+            if (parseInt(c.w) > 0) {
+                var rx = xsize / c.w;
+                var ry = ysize / c.h;
+
+                $pimg.css({
+//                    width: Math.round(rx * boundx) + 'px',
+//                    height: Math.round(ry * boundy) + 'px',
+                    marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                    marginTop: '-' + Math.round(ry * c.y) + 'px'
+                });
+            }
+        };
+    });
+
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+<title>Upload new File</title>
+<div class="container">
+    <h1>Upload New File</h1>
+
+    <form action="" class='hidden' method=post enctype=multipart/form-data>
+        <input class='form-control' name=file id="file" accept="image/gif, image/jpeg, image/png"/>
+        <input class='form-control' type="text" name="title" id="title">
+        <input class='form-control' type="text" name="description" id="description">
+    </form>
+
+    <form id="coords" class="coords" onsubmit="return false;" action="http://example.com/post.php">
+        <label>X1 <input type="text" size="4" id="x1" name="x1"></label>
+        <label>Y1 <input type="text" size="4" id="y1" name="y1"></label>
+        <label>X2 <input type="text" size="4" id="x2" name="x2"></label>
+        <label>Y2 <input type="text" size="4" id="y2" name="y2"></label>
+        <label>W <input type="text" size="4" id="w" name="w"></label>
+        <label>H <input type="text" size="4" id="h" name="h"></label>
+    </form>
+
+    <div class="crop">
+        <img id="target" alt="Upload an image" height=300 width=500>
+
+
+        <div id="preview-pane">
+            <div class="preview-container">
+                <img src="demo_files/sago.jpg" class="jcrop-preview" alt="Preview"
+                     style="width: 200px; height: 200px; ">
+            </div>
+        </div>
+
+    </div>
+
+
+    <!--<img id="crop_img" height=320 width=320>-->
+
+    <div class="row">
+        <form>
+            <input class="form-control" id="image_upload" type="file" class="form-control" name="file"/>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

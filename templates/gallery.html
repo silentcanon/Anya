@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+<script src="{{url_for('static',filename='jsrender.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        $("ul #gallery").addClass('active').siblings().removeClass('active');
+
+        var info = {
+            id: "1084890754743703865_425261701",
+            img_src: "https://instagram.com/p/8OTmS4mpk5/",
+            thumbnail_src: "https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/s150x150/e35/11934640_133282377026998_611942841_n.jpg",
+            large_src: "https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/s640x640/sh0.08/e35/11934640_133282377026998_611942841_n.jpg"
+        };
+        $img_comp = $("<img>", {'src': info.large_src});
+        $img_link_comp = $("<a>", {'href': info.img_src}).append($img_comp);
+        $caption = $("<div>",{'class':'caption'}).append($('<h3>test</h3>')).append($('<p>test</p>'));
+        $thumbnail = $("<div>",{'class': 'thumbnail'});
+        $thumbnail.append($img_link_comp).append($caption);
+        $('#nanshen').append($thumbnail);
+
+
+        $(window).scroll(function () {
+            if ($(document).scrollTop() + $(window).height() >= $(document).height() + 10) {
+                alert("哦哦,到底了.");
+            }
+        });
+    });
+</script>
+
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container" id="nanshen">
+    <h>Test</h>
+</div>
+{% endblock %}

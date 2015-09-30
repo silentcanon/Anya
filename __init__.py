@@ -6,6 +6,7 @@ from flask.ext.login import LoginManager
 from flask.ext.pagedown import PageDown
 from flask.ext.bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
+from flask_oauthlib.client import OAuth
 
 # app = Flask(__name__)
 # app.config.from_object('config')
@@ -22,6 +23,7 @@ from flask_wtf.csrf import CsrfProtect
 # bootstrap = Bootstrap(app)
 # from app import views, models
 
+oauth = OAuth()
 bootstrap = Bootstrap()
 csrf = CsrfProtect()
 db = SQLAlchemy()
@@ -38,6 +40,8 @@ def create_app():
     csrf.init_app(app)
     lm.init_app(app)
     db.init_app(app)
+    oauth.init_app(app)
+
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
@@ -46,6 +50,15 @@ def create_app():
 
     from blog import blog as blog_blueprint
     app.register_blueprint(blog_blueprint, url_prefix='/blog')
+
+    from instagram import instagram as instagram_blueprint
+    app.register_blueprint(instagram_blueprint, url_prefix='/instagram')
+
+    from gallery import gallery as gallery_blueprint
+    app.register_blueprint(gallery_blueprint, url_prefix='/gallery')
+
+    from photo import photo as photo_blueprint
+    app.register_blueprint(photo_blueprint, url_prefix='/photo')
 
     # with app.app_context():
     #     db.create_all()
