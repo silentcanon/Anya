@@ -52,6 +52,12 @@
         });
 
         var updatePreview = function (c) {
+            $('#x1').val(c.x);
+            $('#x2').val(c.x2);
+            $('#y1').val(c.y);
+            $('#y2').val(c.y2);
+            $('#w').val(c.w);
+            $('#h').val(c.h);
             if (parseInt(c.w) > 0) {
                 var rx = xsize / c.w;
                 var ry = ysize / c.h;
@@ -66,6 +72,16 @@
         };
     });
 
+    jQuery(document).ready(function() {
+        $('#submit').click(function(e) {
+            $('#title').val($('#shown_title').val());
+            $('#description').val($('#shown_description').val());
+            console.log('des',$('#description').val());
+            console.log('title',$('#title').val());
+            $('#main_form').submit();
+        })
+    })
+
 
 </script>
 
@@ -73,44 +89,66 @@
 
 {% block content %}
 <title>Upload new File</title>
+
+{% for msg in photoForm.title.errors %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ msg }}
+    </div>
+{% endfor %}
+
+{% for msg in photoForm.description.errors %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ msg }}
+    </div>
+{% endfor %}
+
 <div class="container">
     <h1>Upload New File</h1>
 
-    <form action="" class='hidden' method=post enctype=multipart/form-data>
-        <input class='form-control' name=file id="file" accept="image/gif, image/jpeg, image/png"/>
-        <input class='form-control' type="text" name="title" id="title">
-        <input class='form-control' type="text" name="description" id="description">
-    </form>
-
-    <form id="coords" class="coords" onsubmit="return false;" action="http://example.com/post.php">
-        <label>X1 <input type="text" size="4" id="x1" name="x1"></label>
-        <label>Y1 <input type="text" size="4" id="y1" name="y1"></label>
-        <label>X2 <input type="text" size="4" id="x2" name="x2"></label>
-        <label>Y2 <input type="text" size="4" id="y2" name="y2"></label>
-        <label>W <input type="text" size="4" id="w" name="w"></label>
-        <label>H <input type="text" size="4" id="h" name="h"></label>
-    </form>
-
     <div class="row">
-        <div class="col-lg-8" style="height: 550px">
-            <img id='target' alt="[Jcrop Example]" style="display: block; visibility: visible; width: 602px; height: 400px; border: none; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; opacity: 0.6;">
+        <div class="col-lg-6" style="height: 500px">
+            <img id='target' alt="[Jcrop Example]" style="display: block; visibility: visible; width: 500px; height: 333px; border: none; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; opacity: 0.6;">
         </div>
 
-        <div id="preview-pane" class="col-lg-4">
-            <div class="preview-container" style="width:400px; height:400px; overflow:hidden;">
+        <div id="preview-pane" class="col-lg-5">
+            <div class="input-group">
+                <span class="input-group-addon">Title</span>
+                <input type="text" class="form-control" placeholder="Title" aria-describedby="basic-addon1" name="Title" id="shown_title">
+            </div>
+            <div class="preview-container" style="width:300px; height:300px; overflow:hidden;">
                 <img class="jcrop-preview" alt="Preview" >
             </div>
+            <div class="input-group">
+                <span class="input-group-addon">Description</span>
+                <input type="text" class="form-control" name="Description" id="shown_description" placeholder="Description" aria-describedby="basic-addon1">
+            </div>
         </div>
+
 
     </div>
 
 
     <!--<img id="crop_img" height=320 width=320>-->
     <div>
-        <form>
-            <input class="form-control" id="image_upload" type="file" class="form-control" name="file"/>
+        <form action="{{url_for('photo.photo_uploder')}}" method='post' enctype='multipart/form-data' id="main_form">
+            {{ photoForm.hidden_tag() }}
+            <input class="form-control" id="image_upload" type="file" name="image_upload" accept="image/gif, image/jpeg, image/png"/>
+            <input class='form-control hidden' type="text" name="title" id="title">
+            <input class='form-control hidden' type="text" name="description" id="description">
+            <div class="" id="pos_para">
+                <label>X1 <input type="text" size="4" id="x1" name="x1"></label>
+                <label>Y1 <input type="text" size="4" id="y1" name="y1"></label>
+                <label>X2 <input type="text" size="4" id="x2" name="x2"></label>
+                <label>Y2 <input type="text" size="4" id="y2" name="y2"></label>
+                <label>W <input type="text" size="4" id="w" name="w"></label>
+                <label>H <input type="text" size="4" id="h" name="h"></label>
+            </div>
         </form>
+
     </div>
+    <button type="button" class="btn btn-lg btn-primary" id="submit">Submit</button>
 
 
 </div>
