@@ -4,7 +4,7 @@ from flask import redirect, render_template, url_for, request
 from flask.ext.login import login_required, current_user
 from app.decorators import admin_required, admin_required_json
 from .forms import photoForm
-from ..utils import crop_save_img
+from app.utils import crop_save_img
 
 from app import db
 import json
