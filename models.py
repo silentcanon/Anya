@@ -185,7 +185,7 @@ class Permission:
 
 
 class Relationship(db.Model):
-    article_id = db.Column(db.Integer, db.ForeignKey('article.id'), primary_key=True, index=True)
+    article_url_title = db.Column(db.Integer, db.ForeignKey('article.url_title'), primary_key=True, index=True)
     tag_name = db.Column(db.Integer, db.ForeignKey('tag.name'), primary_key=True, index=True)
 
     def __repr__(self):

@@ -4,6 +4,7 @@ from flask import redirect, render_template, url_for, request
 from flask.ext.login import login_required, current_user
 import datetime
 from app import utils
+from app import service
 from app.decorators import admin_required, admin_required_json
 from .forms import PostForm, EditForm, CommentForm
 from ..models import Article, Comment, User, BlogStat
@@ -48,6 +49,9 @@ def post_article():
         allow_comment = editForm.allow_comment.data
         tags = editForm.tags.data
         tagList = tags.split()
+        service.tags.addTags(tagList)
+        service.tags.registerArticle()
+
 
         public = editForm.public.data
         modified_time = create_time
@@ -100,7 +104,7 @@ def blog_edit(url_title):
         tags = editForm.tags.data
         tagList = tags.split()
         utils.addTagsIfNecessary(tagList)
-        
+
 
         ## update article
         article.content_html = content_html
