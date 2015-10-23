@@ -9,12 +9,15 @@
 
         image_update = images_update_maker();
         image_update.next_images();
-
+        var alock = lock();
+        alock.release();
         $(window).scroll(function () {
-            if ($(document).scrollTop() + $(window).height() >= $(document).height() + 10) {
-                if(!image_update.isOver()) {
+            if ($(document).scrollTop() + $(window).height() >= $(document).height() ) {
+                if(!image_update.isOver() && alock.status()) {
                     $('#loader').show();
-                    image_update.next_images();
+                    alock.lock();
+                    image_update.next_images(alock.release);
+
                 }
             }
         });
@@ -34,6 +37,11 @@
     <div class="container" id="loader">
         <img src="/static/gif/loading.gif" style="margin-left: auto; margin-right: auto; clear: both; display: block">
         <p style="text-align: center">Loading..</p>
+        <p style="text-align: center">Loading2..</p>
+        <p style="text-align: center">Loading3..</p>
+        <p style="text-align: center">Loading4..</p>
+        <p style="text-align: center">Loading5..</p>
+        <p style="text-align: center">Loading6..</p>
     </div>
     <div class="container" id="footer">
         <p>jiliguala</p>

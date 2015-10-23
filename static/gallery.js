@@ -1,25 +1,28 @@
 /**
  * Created by Canon on 2015-09-29.
  */
-var update_recent_images = function() {
+var update_recent_images = function(callback) {
     if(is_over) {
         return;
     }
     url = "/gallery/instagram/?count=5&client_id=44a3704cf42b4a2eb8329cba1054b450";
     if(next_max_id) {
         url = url + "&max_id=" + next_max_id;
-        if(next_max_id == last_max_id) {
+        if(next_max_id === last_max_id) {
+            console.log("duplicated id");
             return;
         }
     }
     var update_gallery = function($thumbnail) {
         $('#nanshen').append($thumbnail);
     };
+
+
     $.ajax({
         url: url,
         //data: data,
         success: function (response) {
-            current_max_id = next_max_id;
+            last_max_id = next_max_id;
             info_list = response['data'];
             if(response.pagination.next_max_id == undefined) {
                 is_over = true;
@@ -29,9 +32,9 @@ var update_recent_images = function() {
             }
             info_list.map(get_single_nail).map(update_gallery);
             $('#loader').hide();
-            last_max_id = current_max_id;
-            //update_gallery(response);
-            //alert();
+            console.log("last:", last_max_id);
+            console.log("next:", next_max_id);
+            callback();
         },
         error: function() {
             //next_max_id = null;
@@ -78,6 +81,22 @@ var images_update_maker = function() {
     };
 
     return {isOver: isOver, next_images: update_recent_images, last_max_id: get_last_max_id};
+};
+
+
+
+var lock = function() {
+    lk = false;
+    var release = function() {
+        lk = true;
+    };
+    var lock = function() {
+        lk = false;
+    };
+    var status = function() {
+        return lk;
+    };
+    return {release: release, lock: lock, status: status};
 };
 
 

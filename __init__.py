@@ -60,6 +60,9 @@ def create_app():
     from photo import photo as photo_blueprint
     app.register_blueprint(photo_blueprint, url_prefix='/photo')
 
+    from photo import photo as baysecret_blueprint
+    app.register_blueprint(baysecret_blueprint, url_prefix='/baysecret')
+
     # with app.app_context():
     #     db.create_all()
 
