@@ -20,6 +20,7 @@ class PostForm(Form):
 class EditForm(Form):
     title = StringField('Title', validators=[DataRequired('Title should not be empty')])
     content_html = StringField('Content', validators=[DataRequired('Content should not be empty')])
+    tags = StringField('Tags')
     allow_comment = BooleanField('Allow comment?', default=True)
     public = BooleanField('Public?', default=True)
     ##submit = SubmitField("Submit")

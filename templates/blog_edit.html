@@ -2,7 +2,13 @@
 {% block head %}
 {{ super() }}
 <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
-<script></script>
+<script src={{url_for('static', filename='js/tag-it.js')}} type="text/javascript" charset="utf-8"></script>
+<!--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">-->
+<link href={{url_for('static',filename='css/jquery.tagit.css')}} rel="stylesheet" type="text/css">
+<link href={{url_for('static',filename='css/tagit.ui-zendesk.css')}} rel="stylesheet" type="text/css">
+
+
+
 <script>tinymce.init({
     selector:'#view textarea',
     plugins:'advlist autolink link image lists preview code',
@@ -44,16 +50,14 @@
             contentData = tinymce.activeEditor.getContent({source_view: true});
             $("form input[name='title']").val(titleData);
             $("form input[name='content_html']").val(contentData);
-//
-//            $("form input[name='public']").attr("checked","checked");
-//
-//            $("form input[name='allow_comment']").attr("checked","checked");
-            $("form[name='editForm']").submit();
-        })
 
-//        $("#tabs-content #source textarea").change(function () {
-//            tinymce.activeEditor.setContent($(this).val());
-//        })
+            var tagList = $("#myTags").tagit("assignedTags");
+
+            $("form[name='editForm']").submit();
+
+
+        });
+
 
     });
 </script>
@@ -101,13 +105,14 @@
                 <textarea>{{editForm.content_html.data}}</textarea>
             </div>
             <div id="source">
-                <textarea></textarea>
+                <textarea style="width: inherit"></textarea>
             </div>
         </div>
         <br><br>
         <form name="editForm" action="" method="post">
-            <input type="text" name="title" style="display: none">
-            <input type="text" name="content_html" style="display: none">
+            <input class="hidden" type="text" name="title">
+            <input class="hidden" type="text" name="content_html">
+            <input class="hidden" type="text" name="tags">
             <p><input type="checkbox"
                       {% if editForm.public.data == True %}
                       checked
@@ -119,7 +124,18 @@
                       checked
                       {% endif %}
                       name="allow_comment">&nbsp Allow Comment?</p>
+            <div id="tagedit">
+                <p>Tags</p>
+                <ul id="myTags">
+                    <!-- Existing list items will be pre-added to the tags -->
+                    <li>Tag1</li>
+                    <li>Tag2</li>
+                </ul>
+
+
+            </div>
             {{editForm.hidden_tag()}}
+
             <button type="button" name="submitBtn" class="btn btn-default">
                 {% if func is not none and func == 'edit' %}
                 Save Changes
@@ -132,5 +148,8 @@
 
     </div>
 </div>
+<script>
+    $("#myTags").tagit();
+</script>
 
 {% endblock %}

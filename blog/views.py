@@ -46,6 +46,9 @@ def post_article():
         url_title = utils.generate_blog_url(create_time, title)
         content_html = editForm.content_html.data
         allow_comment = editForm.allow_comment.data
+        tags = editForm.tags.data
+        tagList = tags.split()
+
         public = editForm.public.data
         modified_time = create_time
         newArticle = Article(url_title=url_title, title=title, content_html=content_html,
@@ -94,10 +97,16 @@ def blog_edit(url_title):
         content_html = editForm.content_html.data
         allow_comment = editForm.allow_comment.data
         public = editForm.public.data
+        tags = editForm.tags.data
+        tagList = tags.split()
+        utils.addTagsIfNecessary(tagList)
+        
+
         ## update article
         article.content_html = content_html
         article.title = title
         article.url_title = url_title
+
         article.allow_comment = allow_comment
         article.public = public
         article.modified_time = datetime.datetime.utcnow()

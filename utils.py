@@ -2,6 +2,7 @@ __author__ = 'Canon'
 import hashlib
 from PIL import Image
 from StringIO import StringIO
+from models import Tag
 
 def generateArticleId(timestamp, urlTitle):
     pass
@@ -58,5 +59,10 @@ def crop_save_img(filename, data, x1, y1, x2, y2):
     dot_pos = filename.rfind('.')
     absfilename = filename[:dot_pos]
     croped_img.save(absfilename+'.jpg', 'JPEG')
+
+
+def addTagsIfNecessary(tagList):
+    Tag.addTags(tagList)
+
 
 

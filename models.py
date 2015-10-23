@@ -128,8 +128,23 @@ class Comment(db.Model):
 
 
 class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(10), index=True)
+    # id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(10), primary=True)
+
+    @staticmethod
+    def getAllTags():
+        tagList = Tag.query.all()
+        result = [t.name for t in tagList]
+        return result
+
+    @staticmethod
+    def addTags(tags):
+        oriTagList = Tag.getAllTags()
+        for t in tags:
+            if t not in oriTagList:
+                newTag = Tag(name=t)
+                db.session.add(newTag)
+        db.session.commit()
 
     def __repr__(self):
         return '<Tag %u>' % self.name
@@ -171,10 +186,10 @@ class Permission:
 
 class Relationship(db.Model):
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'), primary_key=True, index=True)
-    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), primary_key=True, index=True)
+    tag_name = db.Column(db.Integer, db.ForeignKey('tag.name'), primary_key=True, index=True)
 
     def __repr__(self):
-        return '<article %d -- tag %d>' % (self.article_id, self.tag_id)
+        return '<article %d -- tag %d>' % (self.article_id, self.tag_name)
 
 
 
