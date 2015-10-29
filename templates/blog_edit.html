@@ -20,47 +20,7 @@
 </script>
 
 
-<script>
-    $(document).ready(function () {
-        $('#tabs-content #source').hide();
 
-        $("#tabs a[href='#source']").click(function (e) {
-            var html = tinymce.activeEditor.getContent({source_view: true});
-            $("#tabs-content #source textarea").val(html);
-            $("form[name='editForm']").hide();
-            e.preventDefault();
-        });
-
-        $("#tabs a[href='#view']").click(function (e) {
-            var html = $("#tabs-content #source textarea").val();
-            tinymce.activeEditor.setContent(html);
-            $("form[name='editForm']").show();
-            e.preventDefault();
-        });
-
-        $('#tabs a').click(function(e){
-            var currentValue = $(this).attr('href');
-            $('#tabs-content '+currentValue).show().siblings().hide();
-            $(this).parent('li').addClass('active').siblings().removeClass('active');
-            e.preventDefault();
-        });
-
-        $("button[name='submitBtn']").click(function () {
-            titleData = $(".input-group #titleinput").val();
-            contentData = tinymce.activeEditor.getContent({source_view: true});
-            $("form input[name='title']").val(titleData);
-            $("form input[name='content_html']").val(contentData);
-
-            var tagList = $("#myTags").tagit("assignedTags");
-
-            $("form[name='editForm']").submit();
-
-
-        });
-
-
-    });
-</script>
 {% endblock %}
 
 
@@ -128,11 +88,9 @@
                 <p>Tags</p>
                 <ul id="myTags">
                     <!-- Existing list items will be pre-added to the tags -->
-                    <li>Tag1</li>
-                    <li>Tag2</li>
+                    <!--<li>Tag1</li>-->
+                    <!--<li>Tag2</li>-->
                 </ul>
-
-
             </div>
             {{editForm.hidden_tag()}}
 
@@ -149,7 +107,54 @@
     </div>
 </div>
 <script>
-    $("#myTags").tagit();
+
+
+    jQuery(function ($) {
+
+        $("#myTags").tagit();
+
+        $('#tabs-content #source').hide();
+
+        $("#tabs a[href='#source']").click(function (e) {
+            var html = tinymce.activeEditor.getContent({source_view: true});
+            $("#tabs-content #source textarea").val(html);
+            $("form[name='editForm']").hide();
+            e.preventDefault();
+        });
+
+        $("#tabs a[href='#view']").click(function (e) {
+            var html = $("#tabs-content #source textarea").val();
+            tinymce.activeEditor.setContent(html);
+            $("form[name='editForm']").show();
+            e.preventDefault();
+        });
+
+        $('#tabs a').click(function(e){
+            var currentValue = $(this).attr('href');
+            $('#tabs-content '+currentValue).show().siblings().hide();
+            $(this).parent('li').addClass('active').siblings().removeClass('active');
+            e.preventDefault();
+        });
+
+        $("button[name='submitBtn']").click(function () {
+            titleData = $(".input-group #titleinput").val();
+            contentData = tinymce.activeEditor.getContent({source_view: true});
+            $("form input[name='title']").val(titleData);
+            $("form input[name='content_html']").val(contentData);
+
+            var tagList = $("#myTags").tagit("assignedTags");
+            var tagString = tagList.join(" ");
+            $("form input[name='tags']").val(tagString);
+
+            $("form[name='editForm']").submit();
+
+
+        });
+
+
+
+
+    });
 </script>
 
 {% endblock %}

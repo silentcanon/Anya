@@ -50,7 +50,7 @@ def post_article():
         tags = editForm.tags.data
         tagList = tags.split()
         service.tags.addTags(tagList)
-        service.tags.registerArticle()
+        service.tags.registerArticle(url_title, tagList)
 
 
         public = editForm.public.data

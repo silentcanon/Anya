@@ -127,27 +127,6 @@ class Comment(db.Model):
 
 
 
-class Tag(db.Model):
-    # id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode(10), primary=True)
-
-    @staticmethod
-    def getAllTags():
-        tagList = Tag.query.all()
-        result = [t.name for t in tagList]
-        return result
-
-    @staticmethod
-    def addTags(tags):
-        oriTagList = Tag.getAllTags()
-        for t in tags:
-            if t not in oriTagList:
-                newTag = Tag(name=t)
-                db.session.add(newTag)
-        db.session.commit()
-
-    def __repr__(self):
-        return '<Tag %u>' % self.name
 
 
 class Role(db.Model):
@@ -184,9 +163,34 @@ class Permission:
     ROOT = 0x80
 
 
+
+class Tag(db.Model):
+    __tablename__ = 'tag'
+    # id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(10), primary_key=True)
+
+    @staticmethod
+    def getAllTags():
+        tagList = Tag.query.all()
+        result = [t.name for t in tagList]
+        return result
+
+    @staticmethod
+    def addTags(tags):
+        oriTagList = Tag.getAllTags()
+        for t in tags:
+            if t not in oriTagList:
+                newTag = Tag(name=t)
+                db.session.add(newTag)
+        db.session.commit()
+
+    def __repr__(self):
+        return '<Tag %u>' % self.name
+
 class Relationship(db.Model):
-    article_url_title = db.Column(db.Integer, db.ForeignKey('article.url_title'), primary_key=True, index=True)
-    tag_name = db.Column(db.Integer, db.ForeignKey('tag.name'), primary_key=True, index=True)
+    __tablename__ = 'relationship'
+    article_url_title = db.Column(db.String(300), db.ForeignKey('article.url_title'), primary_key=True, index=True)
+    tag_name = db.Column(db.Unicode(10), db.ForeignKey('tag.name'), primary_key=True, index=True)
 
     def __repr__(self):
         return '<article %d -- tag %d>' % (self.article_id, self.tag_name)
@@ -199,8 +203,6 @@ class BlogStat(db.Model):
     blog_id = db.Column(db.Integer, db.ForeignKey('article.id'), index=True)
     ip = db.Column(db.String(20))
     visit_time = db.Column(db.DateTime)
-
-
 
 
 
