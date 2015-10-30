@@ -205,12 +205,20 @@ class BlogStat(db.Model):
     visit_time = db.Column(db.DateTime)
 
 
+class PhotoInfo(db.Model):
+    __tablename__ = "photoinfo"
+    photo_id = db.Column(db.String(64), primary_key=True)
+    title = db.Column(db.Unicode(64))
+    upload_time = db.Column(db.DateTime)
+    ## todo
+
+
+
 
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
-db.event.listen(Article.content_markdown, 'set', Article.on_change_body)
 lm.anonymous_user = AnonymousUser
 
 

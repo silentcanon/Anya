@@ -4,7 +4,7 @@ from flask import redirect, render_template, url_for, request
 from flask.ext.login import login_required, current_user
 from app.decorators import admin_required, admin_required_json
 from .forms import photoForm
-from app.utils import crop_save_img
+from app import service
 
 from app import db
 import json
@@ -26,7 +26,7 @@ def photo_uploder():
     filename = photo.filename
     photo_byte = photo.read()
 
-    crop_save_img(filename, photo_byte, x1, y1, x2, y2)
+    service.photo.crop_save_img(filename, photo_byte, x1, y1, x2, y2)
 
     return redirect(url_for('gallery.index'))
 

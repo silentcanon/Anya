@@ -1,2 +1,2 @@
 __author__ = 'Canon'
-from . import tags
+from . import tags, photo
