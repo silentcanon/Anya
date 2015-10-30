@@ -121,6 +121,9 @@ def blog_edit(url_title):
     editForm.content_html.data = article.content_html
     editForm.public.data = article.public
     editForm.allow_comment.data = article.allow_comment
+    tagList = service.tags.getTagsByUrlTitle(url_title)
+    editForm.tags.data = " ".join(tagList)
+    print editForm.tags.data
     return render_template("blog_edit.html", editForm=editForm, func='edit')
 
 

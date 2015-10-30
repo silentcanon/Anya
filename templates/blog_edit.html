@@ -7,8 +7,6 @@
 <link href={{url_for('static',filename='css/jquery.tagit.css')}} rel="stylesheet" type="text/css">
 <link href={{url_for('static',filename='css/tagit.ui-zendesk.css')}} rel="stylesheet" type="text/css">
 
-
-
 <script>tinymce.init({
     selector:'#view textarea',
     plugins:'advlist autolink link image lists preview code',
@@ -22,11 +20,6 @@
 
 
 {% endblock %}
-
-
-
-
-
 
 
 {% block content %}
@@ -72,7 +65,7 @@
         <form name="editForm" action="" method="post">
             <input class="hidden" type="text" name="title">
             <input class="hidden" type="text" name="content_html">
-            <input class="hidden" type="text" name="tags">
+            <input class="hidden" type="text" name="tags" value="{{editForm.tags.data}}">
             <p><input type="checkbox"
                       {% if editForm.public.data == True %}
                       checked
@@ -87,9 +80,6 @@
             <div id="tagedit">
                 <p>Tags</p>
                 <ul id="myTags">
-                    <!-- Existing list items will be pre-added to the tags -->
-                    <!--<li>Tag1</li>-->
-                    <!--<li>Tag2</li>-->
                 </ul>
             </div>
             {{editForm.hidden_tag()}}
@@ -110,8 +100,6 @@
 
 
     jQuery(function ($) {
-
-        $("#myTags").tagit();
 
         $('#tabs-content #source').hide();
 
@@ -135,6 +123,13 @@
             $(this).parent('li').addClass('active').siblings().removeClass('active');
             e.preventDefault();
         });
+
+        var tagList = $("form input[name='tags']").val().split(" ");
+        console.log(tagList);
+        tagList.map(function(tag) {
+            $("#myTags").append($("<li>").html(tag));
+        });
+        $("#myTags").tagit();
 
         $("button[name='submitBtn']").click(function () {
             titleData = $(".input-group #titleinput").val();

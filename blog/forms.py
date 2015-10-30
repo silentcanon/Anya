@@ -36,12 +36,15 @@ class EditForm(Form):
     #     return True
 
     @staticmethod
-    def constructFrom(article):
+    def constructFrom(article, tagList=None):
         editForm = EditForm
         editForm.title = article.title
         editForm.allow_comment = article.allow_comment
         editForm.public = article.public
         editForm.content_html = article.content_html
+        if tagList:
+            editForm.tags = " ".join(tagList)
+
         return editForm
 
 
