@@ -103,8 +103,8 @@ def blog_edit(url_title):
         public = editForm.public.data
         tags = editForm.tags.data
         tagList = tags.split()
-        utils.addTagsIfNecessary(tagList)
-
+        service.tags.addTags(tagList)
+        service.tags.registerArticle(url_title, tagList)
 
         ## update article
         article.content_html = content_html

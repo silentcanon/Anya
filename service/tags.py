@@ -5,7 +5,10 @@ from ..models import Relationship, Article, Tag
 from ..models import Relationship, Tag
 
 def registerArticle(article_url_title, tagList):
+    oriTagList = getTagsByUrlTitle(article_url_title)
     for tag in tagList:
+        if tag in oriTagList:
+            continue
         relationship = Relationship(article_url_title=article_url_title, tag_name=tag)
         db.session.add(relationship)
     db.session.commit()
