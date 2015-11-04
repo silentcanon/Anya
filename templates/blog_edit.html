@@ -23,6 +23,7 @@
 
 
 {% block content %}
+{{ super() }}
 
 {% for message in editForm.title.errors %}
     <div class="alert alert-warning">

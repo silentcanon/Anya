@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
+{{ super() }}
     <h>Hi!</h>
     {% for post in posts %}
     <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
     {% endfor %}
-</div>
 {% endblock %}
