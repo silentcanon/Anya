@@ -70,7 +70,9 @@ def post_article():
 @blog.route("/archives/<url_title>", methods=['GET'])
 def blog_view(url_title):
     article = Article.query.filter_by(url_title=url_title).first()
-    commentForm = CommentForm(request.form)
+    url_title = article.url_title
+    tagList = service.tags.getTagsByUrlTitle(url_title)
+
     if article is None:
         return redirect(url_for("main.index"))
     ip = request.remote_addr
@@ -83,7 +85,7 @@ def blog_view(url_title):
     ##blogStat = BlogStat(blog_id=int(article.id), ip=ip, visit_time=datetime.datetime.utcnow())
     ##db.session.add(blogStat)
     ##db.session.commit()
-    return render_template("blog.html", article=article, commentForm=commentForm)
+    return render_template("blog.html", article=article, tagList=tagList)
 
 
 @blog.route("/archives/<url_title>/edit", methods=['GET', 'POST'])

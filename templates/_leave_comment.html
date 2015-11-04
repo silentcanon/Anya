@@ -48,8 +48,7 @@
     <div class="col-sm-8">
         <h4>Leave a comment</h4>
         <form id="commentForm" action="" method="post" class="form" role="form">
-            <!--<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />-->
-            {{ commentForm.hidden_tag() }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <input id="reply_to" name="reply_to" type="hidden">
             <input id="url_title" name="url_title" type="hidden" value="{{article.url_title}}">
             {% if current_user.is_authenticated() %}

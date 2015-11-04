@@ -57,6 +57,7 @@
     {% endblock %}
 
     {% block content %}
+    {{ super() }}
 
     <div class="container" id="message">
         {% with messages = get_flashed_messages() %}

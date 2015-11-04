@@ -21,6 +21,11 @@
     <div class="col-sm-8">
         <h1>{{article.title}}</h1>
         <p>{{article.content_html | safe }}</p>
+        {% for tag in tagList %}
+        <p><span class="label label-default">{{tag}}</span></p>
+
+        {% endfor %}
+
         {% if current_user.is_admin() %}
         <a href="{{ url_for('blog.blog_edit',url_title=article.url_title) }}">Edit</a>
         {% endif %}

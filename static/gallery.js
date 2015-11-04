@@ -71,8 +71,8 @@ var get_single_nail = function(img_info) {
     $img_comp = $("<img>", {'src': info.standard_src});
     $img_link_comp = $("<a>", {'href': info.img_src, 'target': "_blank"}).append($img_comp);
 
-    $caption = $("<div>", {'class': 'caption'}).append($('<p>'+img_info['create_time']+'</p>')).append($('<p>'+info['location']+'</p>'));
-    $thumbnail = $("<div>", {'class': 'thumbnail col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3','style':'display: inline-block'});
+    $caption = $("<div>", {'class': 'caption text-left'}).append($('<p>'+img_info['create_time']+'</p>')).append($('<p>'+info['location']+'</p>'));
+    $thumbnail = $("<div>", {'class': 'thumbnail','style':'display: inline-block'});
     $thumbnail.append($img_link_comp).append($caption);
     return $thumbnail;
 };
