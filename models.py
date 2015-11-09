@@ -77,7 +77,6 @@ class Article(db.Model):
     url_title = db.Column(db.String(300), primary_key=True)
     title = db.Column(db.Unicode(300))
     content_html = db.Column(db.UnicodeText)
-    content_markdown = db.Column(db.UnicodeText)
     brief_content = db.Column(db.UnicodeText)
     create_time = db.Column(db.DateTime, index=True)
     modified_time = db.Column(db.DateTime)
@@ -108,7 +107,7 @@ class Comment(db.Model):
     timestamp = db.Column(db.DateTime)
     article_url_title = db.Column(db.String(300), db.ForeignKey('article.url_title'))
     content = db.Column(db.Unicode(300))
-    parentCmt_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    parentCmt_id = db.Column(db.String(20), db.ForeignKey('comment.id'))
 
     def toDict(self):
         d = {

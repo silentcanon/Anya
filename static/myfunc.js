@@ -11,6 +11,7 @@ function show_comments(comments, callback) {
         $html_tmpl.find("span.floorNum").html("#" + floorNum.toString());
         $html_tmpl.find("span.username").html(comment.username);
         $html_tmpl.find("p.comment_content").html(comment.content);
+        $html_tmpl.find("img[name='gravatar']").attr("src",'http://www.freestylecombatkarate.co.uk/uploads/g_cache/464f6b3db64de4ecae31db8c76ce9f65.png');
         if (comment.parentCmt_id != null) {
             $receiver = $html_tmpl.find("p.comment_receiver");
             $receiver.find("span.floorNum").html("#" + id2floorNum[comment.parentCmt_id][0]);

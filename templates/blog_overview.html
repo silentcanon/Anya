@@ -36,6 +36,9 @@
     <div class="col-sm-3 col-sm-offset-1">
         <p>Another row
         </p>
+        {% if current_user.is_admin() %}
+        <a href="{{url_for('blog.post_article')}}"><button class="btn btn-default">Post</button></a>
+        {% endif %}
     </div>
 </div>
 </div>

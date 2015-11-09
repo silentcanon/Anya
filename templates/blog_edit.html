@@ -66,7 +66,11 @@
         <form name="editForm" action="" method="post">
             <input class="hidden" type="text" name="title">
             <input class="hidden" type="text" name="content_html">
+            {% if editForm.tags.data is none %}
+            <input class="hidden" type="text" name="tags">
+            {% else %}
             <input class="hidden" type="text" name="tags" value="{{editForm.tags.data}}">
+            {% endif %}
             <p><input type="checkbox"
                       {% if editForm.public.data == True %}
                       checked
@@ -87,7 +91,7 @@
 
             <button type="button" name="submitBtn" class="btn btn-default">
                 {% if func is not none and func == 'edit' %}
-                Save Changes
+                Save
                 {% else %}
                 Submit
                 {% endif %}
